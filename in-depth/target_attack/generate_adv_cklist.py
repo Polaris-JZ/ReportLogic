@@ -71,63 +71,62 @@ ATTACK_STRENGTH_FIELDS = ["attack_strength", "desired_attack_strength", "attackS
 
 
 PROMPT_TEMPLATE = """
-You are a logic analysis expert。
+You are a logic analysis expert.
 
-Your task is：Based on the question QUERY and two answer texts（A and B），generate a **logic evaluation checklist（checklist）**，to help annotators compare the two answers across eight logical dimensions。
+Your task: Given the question QUERY and two answer texts (A and B), produce a **logic evaluation checklist** that helps annotators compare the answers across eight logical dimensions.
 
-——
+---
 
-## Three-Level Logical Framework Description
-This evaluation is based on classical logic and argumentation analysis theory，dividing text logic into three levels：
-1. **Macro level（Macro level）**：focuses on the overall logical direction and thematic focus of the text，determining whether the answer matches the task and maintains global consistency。
-2. **Structural level（Structural level）**：examines the completeness of the argumentative chain，including claims, evidence, reasoning, qualifiers, and consistency。
-3. **Expositional level（Expositional level）**：combining information flow theory（Given→New），evaluating whether the development of information from given to new is natural, smooth, and easy to understand。
+## Three-Level Logic Framework
+This evaluation draws on classical logic and argumentation analysis theory and divides textual logic into three layers:
+1. **Macro level**: Examine the overall argumentative direction and thematic focus; determine whether the answer aligns with the task and maintains global coherence.
+2. **Structural level**: Assess the completeness of the reasoning chain, including claims, evidence, warrants, qualifiers, and internal consistency.
+3. **Expositional level**: Using information-flow theory (Given → New), judge whether the progression from familiar to new information is natural, smooth, and easy to follow.
 
-——
+---
 
-## Eight Logical Evaluation Dimensions Descriptionand Question Focus on重点
+## Eight Logical Dimensions and Question Focus
 
+1. **Task alignment & claim clarity**  
+    - **Definition**: Judge whether the answer (particularly the opening or conclusion) clearly addresses the core task in QUERY, presents a focused central claim, and maintains topical alignment throughout.  
+    - **Question focus**: Which side more clearly addresses the task up front or in the conclusion, states a central stance, and keeps the discussion on-topic?
 
-1. **Task alignment & claim clarity（Task alignment & claim clarity）**  
-   - **Definition**：Focuses on whether the answer（如开头或结尾）清楚responds to了 QUERY 's core task at a prominent position，是否提出了明确、集中的中心论点。Evaluates whether the entire text stays focused on the topic，and whether there are digressions or deviations。  
-   - **Question Focus on**：Compares which side“more clearly responds to the question at the beginning or end、presents a central position、maintains thematic consistency”。
+2. **Global coherence**  
+    - **Definition**: Evaluate whether the overall structure is logical from start to finish and follows an order appropriate for QUERY (e.g., background → issue → analysis → conclusion for analytical tasks, or comparison → evaluation → conclusion for comparison tasks). Focus on whether the essay sustains a stable argumentative arc.  
+    - **Question focus**: Which side has a more organized global structure, follows a task-appropriate development sequence, and lands a conclusion that ties back to the body?
 
-2. **Global coherence（Global coherence）**  
-   - **Definition**：Focus on回答整体从头到尾的逻辑架构是否清晰、合理，内容是否按照符合 QUERY 要求的逻辑顺序展开（例如：若 QUERY 要求分析，应体现背景→问题→分析→结论；若 QUERY 要求比较，应体现对比→评价→结论等）。重点在于全篇是否形成稳定的逻辑主线。  
-   - **Question Focus on**：Compares which side“has a more organized overall structure、follows a development sequence that better aligns with task logic、has conclusions that better echo the preceding text”。
+3. **Local coherence**  
+    - **Definition**: Inspect the logical relationships between adjacent paragraphs or sentences—whether transitions are smooth and arguments connect naturally without leaps.  
+    - **Question focus**: Which side provides smoother paragraph transitions and more coherent local reasoning links?
 
-3. **Local coherence（Local coherence）**  
-   - **Definition**：Focus onwhether the logical relationships between adjacent paragraphs or sentences are coherent，whether there are reasonable transitions or connections between arguments。focuses on judging whether paragraph transitions are smooth、and whether there are logical breaks or jumps。  
-   - **Question Focus on**：Compares which side“段落衔接更合理、逻辑过渡更连贯”。
+4. **Evidence sufficiency & relevance**  
+    - **Definition**: Determine whether key claims are supported by sufficient, on-topic evidence (data, experiments, facts, literature, case studies, etc.) and whether that evidence is logically connected to the conclusions.  
+    - **Question focus**: Which side offers more specific, relevant evidence that directly supports the main conclusions?
 
-4. **Evidence sufficiency & relevance（Evidence sufficiency & relevance）**  
-   - **Definition**：Focus on关键主张是否由充分且贴题的证据支撑（如数据、实验、事实、文献、案例等），以及这些证据and结论之间是否形成清晰、可追溯的逻辑关系。  
-   - **Question Focus on**：Compares which side“提供的证据更具体、更贴题、更能支撑主要结论”。
+5. **Warrants & causal reasoning**  
+    - **Definition**: Assess whether the answer explains *why* the evidence supports the conclusions, whether the reasoning chain is complete, and whether causal directions are valid without leaps.  
+    - **Question focus**: Which side provides a more complete reasoning chain with clearer causal explanations and more reasonable logical transitions?
 
-5. **Warrants & causal reasoning（Warrants & causal reasoning）**  
-   - **Definition**：Focus on回答是否清楚说明“为什么”这些证据能支撑结论，推理过程是否完整、因果方向是否合理，是否存在逻辑跳跃。  
-   - **Question Focus on**：Compares which side“推理链更完整、因果关系更清晰、逻辑过渡更合理”。
+6. **Qualifiers & counterpoints**  
+    - **Definition**: Check whether the answer acknowledges counterexamples, uncertainties, or exceptions, and whether it uses qualifiers, concessions, or balanced phrasing to avoid overstatements.  
+    - **Question focus**: Which side better identifies counterpoints or boundary conditions and uses them to keep the argument balanced?
 
-6. **Qualifiers & counterpoints（Qualifiers & counterpoints）**  
-   - **Definition**：Focus on回答是否识别并处理潜在反例、不确定性或例外情况，是否通过限定条件、让步或平衡表述避免绝对化论断。  
-   - **Question Focus on**：Compares which side“更能识别反例、设置前提或限定条件，使论证更平衡”。
+7. **Internal consistency**  
+    - **Definition**: Inspect whether data, definitions, and positions remain consistent throughout the answer, avoiding contradictions in numbers, terminology, or stance.  
+    - **Question focus**: Which side stays more internally consistent and self-coherent?
 
-7. **Internal consistency（Internal consistency）**  
-   - **Definition**：Focus on回答内部的数据、Definition和立场是否前后一致，有无比例矛盾、Definition变化或自相矛盾的论点。  
-   - **Question Focus on**：Compares which side“论述更前后一致、内部逻辑更自洽”。
+8. **Concept introduction & logical transition**  
+    - **Definition**: Evaluate the naturalness of information development, especially the transition from known to new concepts.  
+      Assessment proceeds in two stages:  
+      1. **Opening level**: Does the introduction supply the necessary background, context, or problem framing before naturally leading to the main topic or claim?  
+          - Jumping directly into abstract discussion or unexplained terminology counts as a logical gap.  
+      2. **Within-body level**: When introducing new concepts, models, or terms in the body, does the answer provide concise explanations or context so readers can grasp their role?  
+    - **Question focus**:  
+      First compare which side eases the reader in with background and transitions smoothly into the topic. If both introductions are solid, then compare which body provides smoother transitions and clearer explanations when introducing new concepts.
 
-8. **Concept introduction & logical transition（Concept introduction & logical transition）**  
-   - **Definition**：该维度Focus on文本中信息展开的自然性，尤其是从“已知 → 新知”的过渡是否平滑。  
-     评估顺序分两级：  
-     1. **篇首层面**：文章开头是否先交代必要的背景、上下文或问题缘起，再自然过渡到主要议题或论点。  
-        - 若一开头就直接跳入抽象讨论或使用读者不熟悉的术语，则视为逻辑衔接不足。  
-     2. **篇内层面**：在正文中引入新概念、模型或术语时，是否提供了简短解释或上下文，使读者能理解其作用和来源。  
-   - **Question Focus on**：  
-     优先Compares which side“在文章开头更好地铺陈背景并自然引出主题”；若二者开头都合理，再Compares which side“在正文中引入新概念时过渡更自然、解释更充分”。
+---
 
-——
-
-## 输入格式
+## Input Format
 
 [INPUT]
 - QUERY
@@ -139,66 +138,62 @@ This evaluation is based on classical logic and argumentation analysis theory，
 - TEXT B
 <<<TEXT_B>>>
 
-——
+---
 
 ## Output Requirements
-- 仅输出 **JSON 数组（长度 = 8）**，数组中每个对象对应上述 1–8 的一个方面，且顺序一致。
-- 每个对象必须包含以下 5 个字段：  
-  - `"aspect"`：上述八项之一（采用精确命名）  
-  - `"question"`：该维度下、针对当前 QUERY + 回答 A/B 的**具体判断问题**。  
-    - 问题必须结合当前语境，指向实际可比的逻辑现象，不能抽象或笼统（如“是否合理”“是否充分”等）。  
-    - 应生成让评审者可以直接在 A/B 中判断“哪一方更好”的具体问题。  
-  - `"good_example"`：and该 question 直接对应的良好回答示例，说明“如果做得好，会是什么样”。  
-  - `"bad_example"`：and该 question 直接对应的差表现示例，说明“如果做得差，会出现什么问题”。  
-    - 两者都必须基于同一 question，反映该维度下同一逻辑点的好坏表现。  
-  - `"span_hint"`：提示标注员应Focus on的语言信号或逻辑线索，需结合当前回答自动定制。  
+- Output **only a JSON array of length 8**, where each object corresponds to one of the eight dimensions in order.
+- Each object must contain the following five fields:  
+  - `"aspect"`: One of the eight dimension names (exact naming).  
+  - `"question"`: A dimension-specific evaluation question tailored to the current QUERY and answers A/B.  
+     - The question must reference the current context and highlight a concrete logical phenomenon; avoid abstract prompts such as "Is it reasonable?" or "Is it sufficient?"  
+     - The question must enable the annotator to decide directly which side performs better.  
+  - `"good_example"`: A positive example that demonstrates what a strong answer would do for this question.  
+  - `"bad_example"`: A negative example that demonstrates what a weak answer would do for the same question.  
+     - Both examples must tie to the same logical focus described in the question.  
+  - `"span_hint"`: Natural-language cues that direct annotators to the relevant signals or logic patterns in the answers.
 
+---
 
-——
+## Generation Guidelines
+- The checklist must be **fully customized to the specific task**, not generic or templated.  
+- Each `question` must satisfy three properties: semantic self-sufficiency, a precise logical focus, and explicit comparison targets.  
+  Specifically:  
+  1. Clearly identify the claim or topic under comparison (e.g., "carbon taxes reduce emissions" rather than "key claim").  
+  2. Spell out the logical focus (e.g., "specificity and relevance of evidence," "completeness of the causal chain," "smoothness of paragraph transitions") rather than vague adjectives.  
+  3. Use natural language so annotators can understand the question without re-reading the entire context.  
+      - Avoid: "Which side provides more concrete support for the key claim?"  
+      - Prefer: "Between A and B, which side offers more specific evidence (such as emissions data, case studies, or mechanism explanations) supporting the claim that carbon taxes reduce emissions, and explains how the evidence backs the conclusion?"
+- Do not rely on bracketed terminology notes (e.g., "MVO = variance risk") unless that notation appears and is defined in the original answers.
+- If the answers contain multiple claims, choose the most central or frequently emphasized claim as the focal point of the question.
+- For dimension 5 (**Warrants & causal reasoning**) specifically:  
+  - The `question` must identify the exact reasoning chain or causal direction discussed by A/B, rather than asking generically whether the logic is sound.  
+  - Do not express causal chains using symbols or arrows (such as "X→Y→Z"); rewrite them in natural language ("X leads to Y, which in turn affects Z").  
+  - The question must include: 1) the causal object (the claim being explained), 2) the causal path (why or how it holds), and 3) the comparison focus (which side gives a clearer account).  
+  - Example:  
+     - Weak: "Which side better explains why the indicators support accurate evaluation?" (too abstract)  
+     - Improved: "Between A and B, which side more clearly explains why policy innovation, rising market demand, and technological progress together drive sustainable development in real estate?"
+- `good_example` and `bad_example` must align with the same logical focus and illustrate the positive vs. negative manifestations of that focal point.  
+- Evaluate **logical structure and argumentative quality only**; ignore factual accuracy and writing style.  
+- All outputs must be written in fluent, concise, and readable English.  
+- Do not add scores or overall summaries.
 
-## 生成指引
-- Checklist 必须**根据每题内容定制生成**，不可使用空洞或模板化表达。  
-- `question` 必须具备“语义自足 + 逻辑焦点 + 明确比较对象”三要素。  
-  具体来说：
-  1. **必须点明被比较的主张或主题对象**（如“碳税政策减少排放”“大型语言模型提升推荐效果”），不能只说“关键主张”或“模型假设”。  
-  2. **必须说明要比较的逻辑焦点**（如“证据的具体性and贴题性”“因果链的完整性”“段落衔接的合理性”），不能只说“更合理”“更清晰”。  
-  3. **必须用自然语言让评审者脱离上下文也能理解问题在问什么。**
-     - 不要写：“哪一方对关键主张提供更具体支撑？”
-     - 写：“比较 A/B，哪一方对‘碳税政策减少排放’这一主张提供了更具体的证据（如排放数据、案例、机制说明），并解释这些证据如何支撑结论？”
-  4. 禁止使用仅列术语或专业符号的括号式说明（如“MVO=方差风险”），除非它直接出现在原文并且被Definition过。
-  5. 如果原文的主张过多或难界定，请选择文中**最核心、最反复强调的主张**作为问题焦点。
-- 对于第5项的问题生成（Warrants & causal reasoning），需额外遵循：
-  - `question` 必须明确指出 A/B 所论述的具体逻辑链或推理方向，而非笼统的“是否合理”。  
-  - 禁止使用符号式或箭头式的因果串联（如“X→Y→Z”）；应改写为自然语言句式（如“X 导致 Y，进而影响 Z”）。  
-  - 问题应包含：
-    1. **因果对象**（要解释的核心主张，如“政策创新促进房地产可持续发展”）；  
-    2. **因果路径**（解释“为什么”或“如何”成立）；  
-    3. **比较焦点**（哪一方更清晰或更合理）。  
-  - 示例：
-    - 不佳： “哪一方更清楚阐明‘为何这些指标能支撑准确比较’的因果链条？”（过于抽象）
-    - 优化： “比较 A/B，哪一方更清楚地解释了‘为什么政策创新、市场需求升级、技术进步能够成为房地产可持续发展的动力’的因果机制？”
-- `good_example` and `bad_example` 必须and question 严格对应，是同一判断点的正反体现。  
-- 仅评估**逻辑结构and论证质量**，不涉及事实正确性或写作风格。  
-- 所有输出使用自然、简洁、可读性强的中文。  
-- 输出中不得出现评分或总结。  
+---
 
-——
-
-## 输出示例（展示风格）
+## Output Style Example
 [
   {
-    "aspect": "Evidence sufficiency & relevance（Evidence sufficiency & relevance）",
-    "question": "比较 A/B，哪一方对‘碳税政策减少排放’这一主张提供了更具体的证据（如排放数据、国家案例、经济机制说明），并解释这些证据如何支撑结论？",
-    "good_example": "引用具体国家数据或研究结果，并说明碳税如何促使企业减少排放，从而支持论点。",
-    "bad_example": "仅笼统声称‘碳税有效’，缺少数据或逻辑说明。",
-    "span_hint": "Focus on‘数据显示/研究发现/案例表明’等证据信号and结论衔接。"
+     "aspect": "Evidence sufficiency & relevance",
+     "question": "Between A and B, which side provides more specific evidence (such as emissions data, national case studies, or mechanism descriptions) to support the claim that carbon taxes reduce emissions, and explains how the evidence underpins the conclusion?",
+     "good_example": "Cites concrete national data or research findings and explains how carbon taxes push firms to curb emissions, thereby supporting the claim.",
+     "bad_example": "Only asserts that carbon taxes work without offering data or logical explanation.",
+     "span_hint": "Look for phrases such as 'data show,' 'studies find,' or 'case evidence' that directly connect evidence to the conclusion."
   },
   ...
 ]
 
-——
+---
 
-请严格遵循以上约束，仅输出符合键名and结构的 JSON 数组（长度=8），所有描述性内容必须使用中文。
+Strictly follow the instructions above and output only a JSON array (length = 8) that matches the required keys and structure, with all descriptions in English.
 """
 
 
@@ -790,7 +785,7 @@ def safe_score_task(task: JudgmentTask, params: Dict[str, Any]) -> Dict[str, Any
         return score_task_with_client(task, params)
     except FilteredResponseError as exc:
         error_payload = {"error": {"code": exc.code, "message": str(exc)}}
-        print(f"跳过题目 {task.question_id}：评审结果被过滤 ({exc.code})")
+        print(f"Skip question {task.question_id}: judge output was filtered ({exc.code})")
         return {
             "question_id": task.question_id,
             "query": task.query,
@@ -813,7 +808,7 @@ def safe_score_task(task: JudgmentTask, params: Dict[str, Any]) -> Dict[str, Any
         }
     except RuntimeError as exc:
         error_payload = {"error": {"code": "judge_runtime_error", "message": str(exc)}}
-        print(f"跳过题目 {task.question_id}：连续失败 {params.get('max_attempts', 0)} 次")
+        print(f"Skip question {task.question_id}: failed {params.get('max_attempts', 0)} consecutive attempts")
         return {
             "question_id": task.question_id,
             "query": task.query,

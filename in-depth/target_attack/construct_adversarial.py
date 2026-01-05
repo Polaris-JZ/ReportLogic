@@ -82,177 +82,177 @@ VALUE_PAIR_CANDIDATES = [
 ]
 
 OTHER_ASPECT_NAMES = [
-    "Task alignment & claim clarity（Task alignment & claim clarity）",
-    "Global coherence（Global coherence）",
-    "Local coherence（Local coherence）",
-    "Evidence sufficiency & relevance（Evidence sufficiency & relevance）",
-    "Warrants & causal reasoning（Warrants & causal reasoning）",
-    "Qualifiers & counterpoints（Qualifiers & counterpoints）",
-    "Internal consistency（Internal consistency）",
-    "Concept introduction & logical transition（Concept introduction & logical transition）",
+    "Task alignment & claim clarity (Task alignment & claim clarity)",
+    "Global coherence (Global coherence)",
+    "Local coherence (Local coherence)",
+    "Evidence sufficiency & relevance (Evidence sufficiency & relevance)",
+    "Warrants & causal reasoning (Warrants & causal reasoning)",
+    "Qualifiers & counterpoints (Qualifiers & counterpoints)",
+    "Internal consistency (Internal consistency)",
+    "Concept introduction & logical transition (Concept introduction & logical transition)",
 ]
 
 ASPECT_DEFINITIONS: Dict[str, Dict[str, str]] = {
-    "Task alignment & claim clarity（Task alignment & claim clarity）": {
+    "Task alignment & claim clarity (Task alignment & claim clarity)": {
         "definition": "Focuses on whether the answer responds to the QUERY's core task at a prominent position and presents a clear, focused claim without digressing.",
         "question_focus": "Compares which side more clearly responds to the question at the beginning or end, presents a central position, and maintains thematic consistency.",
     },
-    "Global coherence（Global coherence）": {
+    "Global coherence (Global coherence)": {
         "definition": "Examines whether the overall logical architecture is clear, whether it unfolds in the sequence required by the task, and forms a stable main thread.",
         "question_focus": "Compares which side has a more organized structure, follows a development sequence that better aligns with task logic, and has conclusions that echo the preceding text.",
     },
-    "Local coherence（Local coherence）": {
-        "definition": "Focuses on whether the transitions between adjacent paragraphs/sentences are smooth, and whether there are logical breaks or jumps.",
+    "Local coherence (Local coherence)": {
+        "definition": "Focuses on whether the transitions between adjacent paragraphs or sentences are smooth and whether there are logical breaks or jumps.",
         "question_focus": "Compares which side has more reasonable paragraph connections and more coherent transitions.",
     },
-    "Evidence sufficiency & relevance（Evidence sufficiency & relevance）": {
+    "Evidence sufficiency & relevance (Evidence sufficiency & relevance)": {
         "definition": "Evaluates whether key claims are supported by sufficient and relevant evidence, and whether evidence and conclusions form clear logic.",
         "question_focus": "Compares which side provides more specific and relevant evidence and explains how it supports the main conclusions.",
     },
-    "Warrants & causal reasoning（Warrants & causal reasoning）": {
+    "Warrants & causal reasoning (Warrants & causal reasoning)": {
         "definition": "Checks whether the answer explains why the evidence supports the conclusion, and whether the causal chain is complete and directionally sound.",
         "question_focus": "Compares which side has a more complete reasoning chain, clearer causal relationships, and more reasonable logical transitions.",
     },
-    "Qualifiers & counterpoints（Qualifiers & counterpoints）": {
-        "definition": "Focuses on whether counterexamples or uncertainties are identified, and qualifiers/concessions are used to maintain argumentative balance.",
-        "question_focus": "Compares which side better identifies counterexamples, sets prerequisites or qualifiers, making the argument more balanced.",
+    "Qualifiers & counterpoints (Qualifiers & counterpoints)": {
+        "definition": "Focuses on whether counterexamples or uncertainties are identified, and whether qualifiers or concessions are used to maintain argumentative balance.",
+        "question_focus": "Compares which side better identifies counterexamples, sets prerequisites or qualifiers, and keeps the argument balanced.",
     },
-    "Internal consistency（Internal consistency）": {
+    "Internal consistency (Internal consistency)": {
         "definition": "Evaluates whether internal data, definitions, and positions are consistent throughout the text without obvious contradictions.",
         "question_focus": "Compares which side has more consistent discourse and more self-consistent internal logic.",
     },
-    "Concept introduction & logical transition（Concept introduction & logical transition）": {
-        "definition": "Focuses on whether the information flow from given to new is natural, whether the background introduction at the beginning is reasonable, and whether concepts are explained when introduced in the text.",
+    "Concept introduction & logical transition (Concept introduction & logical transition)": {
+        "definition": "Focuses on whether the information flow from known context to new content is natural, whether the opening provides suitable background, and whether new concepts are explained when introduced.",
         "question_focus": "Compares which side better lays out the background and provides natural transitions and explanations when introducing new concepts.",
     },
 }
 
-DEFAULT_ASPECT_DEFINITION = "This dimension is used to characterize the answer's performance in specific logical aspects. Please focus on this logical point according to the checklist question."
-DEFAULT_ASPECT_QUESTION_FOCUS = "Compares which side在该逻辑维度上更符合 checklist question 描述的标准。"
+DEFAULT_ASPECT_DEFINITION = "This dimension captures how the answer behaves on a specific logical criterion. Focus the attack on the logical signal described by the checklist question."
+DEFAULT_ASPECT_QUESTION_FOCUS = "Compares which side better satisfies the checklist question within this logical dimension."
 
 ASPECT_ATTACK_RECIPES: Dict[str, str] = {
-    "Task alignment & claim clarity（Task alignment & claim clarity）": (
-        "- 目标：弱化回答对 QUERY 核心任务的直接响应，使中心主张不够显著或表述含糊，但保持主题and立场不变。\n"
-        "- 推荐操作（任选 1-2 项，避免跨维度连带破坏）：\n"
-        "  1) 将原本位于开头/结尾的明确主张移到中段，并用更弱势措辞表达。\n"
-        "  2) Add a short preamble at the beginning that is related to the theme but does not directly respond to the task（1-2 句），Dilute task alignment signals。\n"
-        "  3) 将“唯一/明确结论句”拆成两句更含糊的倾向性判断。\n"
-        "- Prohibited operations：\n"
-        "  * 不改变总体立场或主要结论方向。\n"
-        "  * 不引入新主题分支或大幅重排段落（避免污染全局/Local coherence）。\n"
-        "  * Do Not Add Key Facts。\n"
-        "- Strength definition：\n"
-        "  * low：仅做 1 处主张显著性削弱（如主张后移或措辞弱化）。\n"
-        "  * medium：主张显著性削弱 + 1 处轻量铺垫稀释（总新增/改写不超过 2-3 句）。\n"
-        "  * high：在不改立场前提下，加入 1 处轻微“中心主张分散”处理，使主张需要跨段才能聚合。\n"
+    "Task alignment & claim clarity (Task alignment & claim clarity)": (
+        "- Goal: Weaken the answer's direct response to the core task so the central claim becomes less prominent, while keeping the topic and stance unchanged.\n"
+        "- Recommended operations (choose 1-2; avoid collateral damage to other dimensions):\n"
+        "  1) Move the explicit thesis from the opening or closing to a middle paragraph and soften the wording.\n"
+        "  2) Add a short thematic preamble (1-2 sentences) at the beginning that does not answer the task directly, diluting task-alignment cues.\n"
+        "  3) Split the single definitive conclusion into two tentative statements.\n"
+        "- Prohibited operations:\n"
+        "  * Do not change the overall stance or main conclusion.\n"
+        "  * Do not introduce new topic branches or reorder paragraphs enough to disrupt global or local coherence.\n"
+        "  * Do Not Add Key Facts.\n"
+        "- Strength definition:\n"
+        "  * low: make one change that reduces thesis prominence (for example, move or soften the claim).\n"
+        "  * medium: weaken the thesis and add one light diluting preamble (no more than 2-3 new sentences in total).\n"
+        "  * high: without changing the stance, add a mild distraction so readers must scan multiple paragraphs to reconstruct the core claim.\n"
     ),
-    "Global coherence（Global coherence）": (
-        "- 目标：让全文宏观结构缺乏清晰的任务驱动推进顺序，使主线推进松散，但不改变核心要点集合。\n"
-        "- 推荐操作（优先结构功能弱化，而非主题转向）：\n"
-        "  1) 轻微调整宏观段落顺序（仅 1 次调序），使任务逻辑链不够顺滑。\n"
-        "  2) 弱化或删除 1 处段首“功能句/主题句”（如“下面从三方面分析…”）。\n"
-        "  3) 将结论段改为更弱的“回顾式总结”，减少前文-结论呼应强度。\n"
-        "- Prohibited operations：\n"
-        "  * Do not introduce new macro threads or new perspectives that cause conclusion direction drift（Avoid contaminating task alignment）。\n"
-        "  * 不大删段落或改写为另一种体裁。\n"
-        "  * 不引入新事实。\n"
-        "- Strength definition：\n"
-        "  * low：仅弱化 1 处结构功能句（不调序）。\n"
-        "  * medium：进行 1 次轻量段落调序 或 弱化 2 处结构功能句。\n"
-        "  * high：1 次轻量调序 + 1 处结论呼应弱化（仍保持段落数量基本不变）。\n"
+    "Global coherence (Global coherence)": (
+        "- Goal: Blur the macro-level progression so the main storyline feels looser, while preserving the core set of points.\n"
+        "- Recommended operations (prioritize structural weakening over topic shifts):\n"
+        "  1) Make one light paragraph reorder that slightly disrupts the task-driven sequence.\n"
+        "  2) Remove or soften one paragraph-leading function sentence (for example, \"Below we analyze three aspects...\").\n"
+        "  3) Downgrade the conclusion into a weaker recap so it echoes the body less strongly.\n"
+        "- Prohibited operations:\n"
+        "  * Do not introduce new threads or perspectives that drift away from the original stance.\n"
+        "  * Do not delete large sections or rewrite the piece into a different genre.\n"
+        "  * Do not add new facts.\n"
+        "- Strength definition:\n"
+        "  * low: weaken only one structural cue (no reordering).\n"
+        "  * medium: perform one light reorder or weaken two structure-signaling sentences.\n"
+        "  * high: combine one light reorder with a weaker conclusion echo while keeping the paragraph count essentially the same.\n"
     ),
-    "Local coherence（Local coherence）": (
-        "- 目标：Break the transition and connection between adjacent sentences/paragraphs, making local reasoning bridges thinner or causing mild jumps。\n"
-        "- 推荐操作：\n"
-        "  1) 删除/弱化 1-2 个关键承接词或过渡句（如“因此/and此同时/不过/由此可见”）。\n"
-        "  2) 将 1 句“解释性过渡”改为更中性的并列陈述。\n"
-        "  3) 在不引入新主题的前提下，插入 1 句较弱的连接句，使段内承接显得牵强。\n"
-        "- Prohibited operations：\n"
-        "  * 不引入新主题段或跨段大调序。\n"
-        "  * 不重复整段或制造明显语病。\n"
-        "  * Do Not Add Key Facts。\n"
-        "- Strength definition：\n"
-        "  * low：仅删/弱化 1 个关键过渡点。\n"
-        "  * medium：删/弱化 2 个过渡点 或 1 个过渡点 + 1 处并列化改写。\n"
-        "  * high：在maintains thematic consistency前提下，制造 1 处“段间轻微承接断点”（但不至于断裂成新主题）。\n"
+    "Local coherence (Local coherence)": (
+        "- Goal: Thin the logical bridges between adjacent sentences or paragraphs without changing the topic.\n"
+        "- Recommended operations:\n"
+        "  1) Delete or soften one to two key connective phrases or transition sentences (for example, \"therefore\", \"meanwhile\", \"by contrast\").\n"
+        "  2) Rewrite an explanatory transition as a neutral side-by-side statement.\n"
+        "  3) Insert one weak linking sentence that makes the flow feel forced while keeping the same topic.\n"
+        "- Prohibited operations:\n"
+        "  * Do not add new topic sections or perform large cross-paragraph reorders.\n"
+        "  * Do not duplicate whole paragraphs or introduce obvious grammatical errors.\n"
+        "  * Do Not Add Key Facts.\n"
+        "- Strength definition:\n"
+        "  * low: remove or weaken a single key transition.\n"
+        "  * medium: weaken two transitions, or weaken one transition plus rewrite another into a flat statement.\n"
+        "  * high: create one mild gap between paragraphs while still keeping the topic consistent.\n"
     ),
-    "Evidence sufficiency & relevance（Evidence sufficiency & relevance）": (
-        "- 目标：让关键主张缺乏具体、贴题、可追踪的支撑，但保留基本论证框架。\n"
-        "- 推荐操作：\n"
-        "  1) 将 1-2 处具体证据（数据/案例/机制）替换为更泛化表述（如“研究表明/通常认为/一些例子显示”）。\n"
-        "  2) 删除 1 处关键 supporting detail（保留证据的存在感，但降低细节颗粒度）。\n"
-        "  3) 保留证据数量但降低and主张的贴合度（轻微相关性错位）。\n"
-        "- Prohibited operations：\n"
-        "  * 不捏造新事实、不新增具体数字/年份/来源。\n"
-        "  * 不把所有证据删空导致回答失去可读论证。\n"
-        "- Strength definition：\n"
-        "  * low：仅将 1 处证据具体化表达“空泛化”。\n"
-        "  * medium：空泛化 1 处 + 删除 1 处 supporting detail。\n"
-        "  * high：空泛化 2 处 或 加入 1 处轻量“相关性错位”证据（不新增外部事实）。\n"
+    "Evidence sufficiency & relevance (Evidence sufficiency & relevance)": (
+        "- Goal: Leave the main argument framework intact but reduce how concrete, on-topic, or traceable the supporting evidence feels.\n"
+        "- Recommended operations:\n"
+        "  1) Replace one or two specific pieces of evidence (data, cases, mechanisms) with generalized statements such as \"studies suggest\" or \"some examples show\".\n"
+        "  2) Remove one key supporting detail so the evidence feels thinner while still acknowledging its existence.\n"
+        "  3) Keep the number of evidence points but make one slightly less aligned with the claim.\n"
+        "- Prohibited operations:\n"
+        "  * Do not fabricate new facts or add concrete numbers, years, or sources.\n"
+        "  * Do not delete all evidence and leave the argument unsupported.\n"
+        "- Strength definition:\n"
+        "  * low: generalize a single evidence reference.\n"
+        "  * medium: generalize one reference and delete one supporting detail.\n"
+        "  * high: generalize two references or introduce one mildly off-target piece while avoiding new external facts.\n"
     ),
-    "Warrants & causal reasoning（Warrants & causal reasoning）": (
-        "- 目标：让证据and结论之间缺乏清晰的“为什么/如何”，使推理桥断薄，But do not change the causal direction and position。\n"
-        "- 推荐操作：\n"
-        "  1) 保留证据点and结论句，但删除/弱化 1 处关键因果解释/机制句。\n"
-        "  2) 将“机制解释句”改为更模糊的推断句（如“可能因此”“这往往意味着”）。\n"
-        "  3) 将原本连续的因果链压缩成跳跃式“因为-所以”两句结构。\n"
-        "- Prohibited operations：\n"
-        "  * 可以删除/弱化因果解释，但不得将因果方向改为相反或引入新因果关系。\n"
-        "  * 不改变总体立场或结论。\n"
-        "  * Do Not Add Key Facts。\n"
-        "- Strength definition：\n"
-        "  * low：Only weaken 1 reasoning bridge（Delete or blur one mechanism sentence）。\n"
-        "  * medium：Weaken 2 reasoning bridges or compress into jump-style causal expressions。\n"
-        "  * high：在不改因果方向前提下，造成 1 处关键中间环节缺失，使读者需自行补推。\n"
+    "Warrants & causal reasoning (Warrants & causal reasoning)": (
+        "- Goal: Keep the evidence and conclusions but erode the clarity of the \"why/how\" explanation without reversing the causal direction.\n"
+        "- Recommended operations:\n"
+        "  1) Retain the evidence and conclusion sentences but delete or soften one crucial mechanism explanation.\n"
+        "  2) Recast a mechanism sentence as a vague inference (for example, \"this might imply\", \"it could therefore suggest\").\n"
+        "  3) Compress a multi-step causal chain into a jumpy two-sentence \"because... therefore\" structure.\n"
+        "- Prohibited operations:\n"
+        "  * Do not reverse the causal direction or introduce new causal steps.\n"
+        "  * Do not change the overall stance or conclusion.\n"
+        "  * Do Not Add Key Facts.\n"
+        "- Strength definition:\n"
+        "  * low: weaken a single reasoning bridge.\n"
+        "  * medium: weaken two reasoning bridges or compress a chain into a jumpy shortcut.\n"
+        "  * high: remove one key intermediate explanation so the reader must infer the missing step.\n"
     ),
-    "Qualifiers & counterpoints（Qualifiers & counterpoints）": (
-        "- 目标：移除必要限定/让步/反例意识，使论断更绝对化或更单边。\n"
-        "- 推荐操作：\n"
-        "  1) 删除 1-2 处限定结构（如“通常/在…条件下/多数情况下/可能”）。\n"
-        "  2) 删除 1 处让步或风险提示句（如“虽然…但…”）。\n"
-        "  3) 将保守措辞替换为更确定的断言（不改变核心结论）。\n"
-        "- Prohibited operations：\n"
-        "  * 不新增and原立场相反的反驳或全新反例。\n"
-        "  * 不凭空添加新事实。\n"
-        "- Strength definition：\n"
-        "  * low：仅删除 1 处限定词/限定短语。\n"
-        "  * medium：删除 1 处限定 + 1 处让步/风险提示。\n"
-        "  * high：将关键结论段整体“去限定化”，呈现明显绝对化语气，但不改立场。\n"
+    "Qualifiers & counterpoints (Qualifiers & counterpoints)": (
+        "- Goal: Remove the sense of caution, balance, or counterexample awareness so the argument reads more absolute while keeping the same stance.\n"
+        "- Recommended operations:\n"
+        "  1) Delete one or two qualifying phrases (for example, \"usually\", \"under certain conditions\", \"may\").\n"
+        "  2) Delete one concession or risk-alert sentence (for example, \"although...\").\n"
+        "  3) Replace cautious wording with firmer assertions without changing the core conclusion.\n"
+        "- Prohibited operations:\n"
+        "  * Do not add rebuttals that contradict the original stance or invent brand-new counterexamples.\n"
+        "  * Do not invent new facts.\n"
+        "- Strength definition:\n"
+        "  * low: remove a single qualifier or hedging phrase.\n"
+        "  * medium: remove one qualifier plus one concession or risk statement.\n"
+        "  * high: rewrite the key conclusion paragraph in clearly absolute language while keeping the stance unchanged.\n"
     ),
-    "Internal consistency（Internal consistency）": (
-        "- 目标：制造轻微但可察觉的文本内自相矛盾或Definition/范围/条件漂移。\n"
-        "- 推荐操作（优先“Definition/范围漂移”，减少“数字冲突”以避免事实性污染）：\n"
-        "  1) 对同一关键概念在前后使用略有差异的Definition或适用范围。\n"
-        "  2) 对同一判断在不同段落给出轻微冲突的表述（如“通常有效” vs “往往不太有效”）。\n"
-        "  3) 在不新增外部事实的前提下，制造 1 处条件设置不一致。\n"
-        "- Prohibited operations：\n"
-        "  * 不引入大量新事实或明显编造数据。\n"
-        "  * Do not make contradictions strong enough to directly overturn the central claim。\n"
-        "- Strength definition：\n"
-        "  * low：Only create 1 mild drift in concept definition or condition。\n"
-        "  * medium：Create 2 mild inconsistencies（Definition + 判断或判断 + 条件）。\n"
-        "  * high：在不推翻主张前提下，出现 1 处可被直接指出的“前后矛盾句对”。\n"
+    "Internal consistency (Internal consistency)": (
+        "- Goal: Introduce mild but noticeable internal tension, such as shifting definitions, ranges, or conditions, without undermining the main claim entirely.\n"
+        "- Recommended operations (favor definition or scope drift over numeric conflicts):\n"
+        "  1) Use slightly different definitions or scopes for the same key concept at different points.\n"
+        "  2) Offer subtly conflicting judgments about the same issue in separate paragraphs (for example, \"usually effective\" vs. \"often less effective\").\n"
+        "  3) Create one inconsistency in stated conditions while avoiding new external facts.\n"
+        "- Prohibited operations:\n"
+        "  * Do not fabricate large volumes of new facts or obvious data errors.\n"
+        "  * Do not make the contradiction so strong that it overturns the central claim outright.\n"
+        "- Strength definition:\n"
+        "  * low: introduce one mild drift in definition or condition.\n"
+        "  * medium: introduce two mild inconsistencies (for example, definition + judgment, or judgment + condition).\n"
+        "  * high: create one clearly identifiable contradictory pair without collapsing the overall stance.\n"
     ),
-    "Concept introduction & logical transition（Concept introduction & logical transition）": (
-        "- 目标：破坏“已知→新知”的信息铺垫and概念引入顺序，Make readers encounter mild conceptual abruptness at the beginning or within the text。\n"
-        "- 推荐操作：\n"
-        "  1) Move 1 key background/definition/setup sentence to a later position。\n"
-        "  2) Introduce 1 term/concept in advance, but weaken its explanation（Preserve topic recognizability）。\n"
-        "  3) Weaken the introductory and transition sentences at the beginning of paragraphs, making information progression less natural。\n"
-        "- Prohibited operations：\n"
-        "  * Do not delete all background, avoid making Dim1 (Task alignment)significantly decline at the same time。\n"
-        "  * Do not significantly change evidence or causal chain content（Avoid contaminating Dim4/5）。\n"
-        "- Strength definition：\n"
-        "  * low：Only adjust the position or explanatory strength of 1 concept/background sentence。\n"
-        "  * medium：Introduce 1 new concept in advance + reduce explanation in 1 place。\n"
-        "  * high：Under the premise of keeping the theme and position unchanged，形成“开头轻度抽象化 + 篇内一处解释滞后”的双点扰动。\n"
+    "Concept introduction & logical transition (Concept introduction & logical transition)": (
+        "- Goal: Disrupt the \"known -> new\" information flow so the opening or in-text concept introductions feel slightly abrupt.\n"
+        "- Recommended operations:\n"
+        "  1) Move one key background, definition, or setup sentence to a later position.\n"
+        "  2) Introduce a term earlier but provide only a thin explanation (keep the topic recognizable).\n"
+        "  3) Weaken paragraph-opening transitions so the information progression feels less natural.\n"
+        "- Prohibited operations:\n"
+        "  * Do not remove all background; avoid simultaneously tanking task alignment.\n"
+        "  * Do not heavily alter evidence or causal content in other dimensions.\n"
+        "- Strength definition:\n"
+        "  * low: adjust the placement or clarity of one background/concept sentence.\n"
+        "  * medium: introduce one concept early and under-explain another location.\n"
+        "  * high: keep the same stance but create a two-point disturbance (a slightly abstract opening plus a delayed explanation later).\n"
     ),
 }
 
 DEFAULT_ATTACK_RECIPE = (
-    "- 目标：围绕 {aspect} 制造单一且可解释的逻辑弱点。\n"
-    "- 推荐操作：在保持Minimal Modification的前提下，削弱该维度描述的关键能力。\n"
-    "- Prohibited operations：不要破坏其它逻辑维度，也不要新增事实或改变立场。"
+    "- Goal: Create a single, explainable weakness for {aspect}.\n"
+    "- Recommended operations: keep edits minimal while targeting the logical signal described for this dimension.\n"
+    "- Prohibited operations: do not damage other logical dimensions, add new facts, or change the stance."
 )
 
 
@@ -445,49 +445,49 @@ ADVERSARIAL_SYSTEM_PROMPT = (
 )
 
 ADVERSARIAL_USER_TEMPLATE = """
-You are an adversarial sample construction expert who needs to transform the logically superior side in the current evaluation into a fragile sample targeting a specific checklist dimension.
+You are an adversarial sample construction expert who must transform the logically superior answer in this evaluation into a fragile variant that targets a specific checklist dimension.
 
 [Task Background]
 - QUERY: {query}
-- Current better answer in evaluation（{favored_label}）：\n{favored_answer}
+- Current better answer in evaluation ({favored_label}):\n{favored_answer}
 
 [Target Logical Dimension]
 - aspect: {aspect}
-- Definition: {aspect_definition}
+- definition: {aspect_definition}
 - question focus: {aspect_question_focus}
 - question: {question}
 - good_example: {good_example}
 - bad_example: {bad_example}
 - span_hint: {span_hint}
-- Desired attack strength: {desired_attack_strength}
+- desired attack strength: {desired_attack_strength}
 
-[Attack Recipe（针对该维度的定制提示）]
+[Attack Recipe (custom guidance for this dimension)]
 {attack_recipe}
 
-[Construction Principles (All Must Be Followed)]
-1. Minimal Modification（Minimal Pair）：The adversarial version and original answer maintain high consistency in length, tone, and structure（Length change ≤10%），Prioritize attacks by reducing/weakening local logical points。
-2. Single-Dimension Targeted Damage（Dimension Isolation）：Only damage the target dimension above, try to maintain the original quality of the other seven logical dimensions。
-3. Logical Damage First：Keep language fluent, do not introduce grammatical errors or meaningless content，Cause weakening through argumentative flaws (vague evidence, causal breaks, missing qualifiers, etc.)。
-4. Do Not Add Key Facts（Fact Stability）：Do not add new specific facts, data, or authoritative sources out of thin air，允许将原有证据改写为更空泛或相关性更弱的描述。
-5. Preserve Core Claims and Topics（Claim & Topic Preservation）：Theme and position remain unchanged, only weaken supporting chains, qualifiers, and information flow。
-6. Strength Control：Retain original paragraphs/format and strictly control attack strength to {desired_attack_strength}（Follow the destruction definition and quantity of this strength）。
-7. Maintain Style Consistency（Style Control）：Avoid using flashy formatting or excessive polishing to create false differences，只通过逻辑链条变化体现攻击。
-8. Human Verifiability（Human Verifiability）：Adversarial flaws should be immediately visible to human reviewers，Rather than being misjudged as writing noise。
+[Construction Principles (all must be satisfied)]
+1. Minimal Modification (Minimal Pair): Keep the adversarial answer closely aligned with the original in length, tone, and structure (length change ≤ 10%), and prioritize weakening by trimming or softening local reasoning.
+2. Single-Dimension Targeted Damage (Dimension Isolation): Only degrade the target dimension above and preserve the original quality of the other seven logical dimensions.
+3. Logical Damage First: Maintain fluent language, avoid grammatical errors or meaningless filler, and weaken by introducing argumentative flaws (vague evidence, missing qualifiers, broken causality, etc.).
+4. Do Not Add Key Facts (Fact Stability): Do not invent new specific facts, data, or authorities. You may rewrite existing evidence into vaguer or less relevant statements.
+5. Preserve Core Claims and Topics (Claim & Topic Preservation): Keep the theme and stance intact while weakening supporting chains, qualifiers, and information flow.
+6. Strength Control: Preserve original paragraphs and formatting, and strictly limit the attack strength to {desired_attack_strength} according to the defined level of damage.
+7. Maintain Style Consistency (Style Control): Do not rely on flashy formatting or heavy polishing to create artificial differences; only the logical chain should reveal the attack.
+8. Human Verifiability (Human Verifiability): Ensure the adversarial flaws are immediately noticeable to human reviewers rather than being mistaken for random noise.
 
 [Output Steps]
-- First think about how to make this dimension exhibit flaws that can be immediately recognized by humans while following the above principles。
-- Clearly write out the attack strategy and its correspondence with the target dimension。
-- Explain how you ensure other logical dimensions are basically unaffected。
+- First plan how to create obvious flaws in the target dimension while honoring the principles above.
+- Describe the attack strategy and how it aligns with the target dimension.
+- Explain how you keep other logical dimensions largely intact.
 
 [Output Requirements]
-返回一个 JSON 对象（不能包含额外字段）：
-{{
+Return a JSON object (do not include extra fields):
+{
     "adversarial_answer": "Modified complete answer",
-    "violation_rationale": "Explain in 2-3 sentences what logical weakening was done for this dimension",
-    "preservation_notes": "Explain how other logical dimensions were preserved as much as possible",
+    "violation_rationale": "Explain in 2-3 sentences how you weakened this dimension",
+    "preservation_notes": "Explain how other logical dimensions were preserved",
     "target_aspect": "{aspect}",
-    "attack_strength": "{desired_attack_strength}（Must be consistent with instructions）"
-}}
+    "attack_strength": "{desired_attack_strength} (must match the instructions)"
+}
 """.strip()
 
 
@@ -558,7 +558,7 @@ class AdversarialClient:
     def generate(self, task: AdversarialTask) -> AdversarialResult:
         attack_recipe = ASPECT_ATTACK_RECIPES.get(
             task.item.aspect,
-            DEFAULT_ATTACK_RECIPE.format(aspect=task.item.aspect or "该维度"),
+            DEFAULT_ATTACK_RECIPE.format(aspect=task.item.aspect or "this dimension"),
         )
         aspect_meta = ASPECT_DEFINITIONS.get(task.item.aspect, {})
         aspect_definition = aspect_meta.get("definition", DEFAULT_ASPECT_DEFINITION)
@@ -617,7 +617,7 @@ class AdversarialClient:
                 if self._is_filtered_error(exc):
                     raise FilteredResponseError("Adversarial generation filtered", code="1209") from exc
                 last_error = exc
-                print(f"AdversarialClient 调用第 {attempt} 次失败：{exc}")
+                print(f"AdversarialClient call failed on attempt {attempt}: {exc}")
                 time.sleep(min(3 * attempt, 10))
         raise RuntimeError(f"Adversarial request failed after {self.max_attempts} attempts: {last_error}")
 
@@ -862,16 +862,16 @@ def _load_existing_resume_keys(path: Path) -> Tuple[Dict[str, int], int]:
             line = line.strip()
             if not line:
                 continue
-            try:
-                record = json.loads(line)
-            except json.JSONDecodeError:
-                continue
-            total_records += 1
-            resume_key = _extract_resume_key_from_record(record)
-            if resume_key:
-                key_counts[resume_key] = key_counts.get(resume_key, 0) + 1
-    return key_counts, total_records
-
+            if existing_key_counts: 
+                resume_skipped = 0 
+                for idx in range(len(tasks) - 1, -1, -1): 
+                    resume_key = _task_resume_key(tasks[idx]) 
+                    if existing_key_counts.get(resume_key, 0) > 0: 
+                        existing_key_counts[resume_key] -= 1 
+                        resume_skipped += 1 
+                        tasks.pop(idx) 
+                if resume_skipped: 
+                    print(f"Resume mode: skipped {resume_skipped} tasks; {len(tasks)} remaining to generate.") 
 
 def _dedupe_jsonl_by_resume_key(path: Path) -> Optional[Dict[str, int]]:
     if not path.exists():
@@ -999,35 +999,35 @@ def _generate_payload_for_task(
             result = client.generate(task)
         except FilteredResponseError as exc:
             print(
-                f"跳过样本 {task.sample.sample_id} checklist#{task.item.index} strength={task.desired_attack_strength}：模型输出被过滤 ({exc.code})."
+                f"Skip sample {task.sample.sample_id} checklist#{task.item.index} strength={task.desired_attack_strength}: model output was filtered ({exc.code})."
             )
             return None
         except Exception as exc:  # pragma: no cover - defensive
             print(
-                f"生成对抗样本失败 (sample={task.sample.sample_id}, cklist={task.item.index}, strength={task.desired_attack_strength}): {exc}"
+                f"Failed to generate adversarial sample (sample={task.sample.sample_id}, cklist={task.item.index}, strength={task.desired_attack_strength}): {exc}"
             )
             return None
 
         response_dict = result.response_json if isinstance(result.response_json, dict) else None
         if response_dict is None:
             print(
-                f"生成对抗样本失败 (sample={task.sample.sample_id}, cklist={task.item.index}, strength={task.desired_attack_strength}): 返回缺少 JSON 对象"
+                f"Failed to generate adversarial sample (sample={task.sample.sample_id}, cklist={task.item.index}, strength={task.desired_attack_strength}): response missing JSON object"
             )
             continue
 
         adv_answer = response_dict.get("adversarial_answer")
         if not adv_answer:
             print(
-                f"生成对抗样本失败 (sample={task.sample.sample_id}, cklist={task.item.index}, strength={task.desired_attack_strength}): 返回缺少 adversarial_answer"
+                f"Failed to generate adversarial sample (sample={task.sample.sample_id}, cklist={task.item.index}, strength={task.desired_attack_strength}): response missing adversarial_answer"
             )
             continue
         if not language_matches(task.favored_answer, adv_answer):
             print(
-                f"语言检测不一致，重试 (sample={task.sample.sample_id}, cklist={task.item.index}, strength={task.desired_attack_strength}, attempt={attempt})"
+                f"Language detection mismatch, retrying (sample={task.sample.sample_id}, cklist={task.item.index}, strength={task.desired_attack_strength}, attempt={attempt})"
             )
             if attempt == language_retry_limit:
                 print(
-                    f"达到语言重试上限，跳过样本 {task.sample.sample_id} checklist#{task.item.index} strength={task.desired_attack_strength}"
+                    f"Reached language retry limit; skip sample {task.sample.sample_id} checklist#{task.item.index} strength={task.desired_attack_strength}"
                 )
             continue
 
@@ -1085,16 +1085,16 @@ def generate_adversarial_dataset(args: argparse.Namespace) -> None:
     dedupe_existing_output = bool(getattr(args, "dedupe_output", False))
     prune_mismatched_output = bool(getattr(args, "prune_mismatched_output", False))
     if dedupe_existing_output and not resume_mode:
-        print("警告：--dedupe-output 仅在 --resume 模式下有意义，已忽略。")
+        print("Warning: --dedupe-output is only meaningful with --resume; ignoring flag.")
         dedupe_existing_output = False
     if prune_mismatched_output and not resume_mode:
-        print("警告：--prune-mismatched-output 仅在 --resume 模式下有意义，已忽略。")
+        print("Warning: --prune-mismatched-output is only meaningful with --resume; ignoring flag.")
         prune_mismatched_output = False
     if dedupe_existing_output and output_path.exists():
         dedupe_stats = _dedupe_jsonl_by_resume_key(output_path)
         if dedupe_stats:
             print(
-                "去重：从 {original} 条记录压缩为 {deduped} 条，删除 {removed} 条重复记录（{unique} 个 resume_key）。".format(
+                "Deduplication: compressed from {original} to {deduped} records, removed {removed} duplicates ({unique} unique resume_key values).".format(
                     original=dedupe_stats["original_count"],
                     deduped=dedupe_stats["deduped_count"],
                     removed=dedupe_stats["duplicates_removed"],
@@ -1105,7 +1105,7 @@ def generate_adversarial_dataset(args: argparse.Namespace) -> None:
         prune_stats = _prune_jsonl_by_resume_keys(output_path, task_resume_keys)
         if prune_stats:
             print(
-                "修剪：保留 {kept}/{original} 条记录（删除 {removed} 条），当前任务共有 {allowed} 个目标 key，其中 {matched} 个已匹配，缺失 {missing} 个。".format(
+                "Pruning: kept {kept}/{original} records (removed {removed}); task expects {allowed} target keys, matched {matched}, missing {missing}.".format(
                     kept=prune_stats["kept_count"],
                     original=prune_stats["original_count"],
                     removed=prune_stats["removed_count"],
@@ -1120,7 +1120,7 @@ def generate_adversarial_dataset(args: argparse.Namespace) -> None:
             existing_key_counts, _ = _load_existing_resume_keys(output_path)
             if existing_key_counts:
                 print(
-                    "Resume 模式：检测到 {records} 条已写入记录（{unique} 个唯一 key），将按需跳过重复任务。".format(
+                    "Resume mode: detected {records} existing records ({unique} unique keys); duplicate tasks will be skipped.".format(
                         records=sum(existing_key_counts.values()),
                         unique=len(existing_key_counts),
                     )
@@ -1142,10 +1142,10 @@ def generate_adversarial_dataset(args: argparse.Namespace) -> None:
             filtered_tasks.append(task)
         tasks = filtered_tasks
         if resume_skipped:
-            print(f"Resume 模式：已跳过 {resume_skipped} 个任务，剩余 {len(tasks)} 个需要生成。")
+            print(f"Resume mode: skipped {resume_skipped} tasks; {len(tasks)} remaining to generate.")
 
     if resume_mode and not tasks:
-        print("Resume 模式：所有目标任务均已存在，直接退出。")
+        print("Resume mode: all target tasks already exist; exiting immediately.")
         return
 
     pending_rows: List[Dict[str, Any]] = []
@@ -1171,7 +1171,7 @@ def generate_adversarial_dataset(args: argparse.Namespace) -> None:
                     adversarial_payload = future.result()
                 except Exception as exc:  # pragma: no cover - defensive
                     print(
-                        f"生成对抗样本失败 (sample={task.sample.sample_id}, cklist={task.item.index}, strength={task.desired_attack_strength}): {exc}"
+                        f"Failed to generate adversarial sample (sample={task.sample.sample_id}, cklist={task.item.index}, strength={task.desired_attack_strength}): {exc}"
                     )
                     adversarial_payload = None
                 if adversarial_payload:
@@ -1189,7 +1189,7 @@ def generate_adversarial_dataset(args: argparse.Namespace) -> None:
         raise SystemExit("No adversarial samples were generated successfully")
 
     if resume_mode:
-        print(f"Resume 模式：追加写入 {total_written} 条新对抗样本到 {args.output_path}")
+        print(f"Resume mode: appended {total_written} new adversarial samples to {args.output_path}")
     else:
         print(f"Wrote {total_written} adversarial variants to {args.output_path}")
 
@@ -1244,12 +1244,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--dedupe-output",
         action="store_true",
-        help="在 --resume 模式下先按 resume_key 去重，仅保留每个 key 最新的一条记录",
+        help="When using --resume, deduplicate by resume_key so only the most recent record per key remains",
     )
     parser.add_argument(
         "--prune-mismatched-output",
         action="store_true",
-        help="在 --resume 模式下根据本次任务集合修剪 JSONL，只保留能匹配的 resume_key",
+        help="When using --resume, trim the JSONL to keep only entries whose resume_key appears in this run",
     )
     return parser.parse_args()
 
