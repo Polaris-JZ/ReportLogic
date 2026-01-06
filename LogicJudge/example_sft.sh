@@ -1,0 +1,31 @@
+
+torchrun --nnodes=${WORLD_SIZE:-1} \
+    --nproc_per_node=$(nvidia-smi -L | wc -l) \
+    --node_rank=${RANK:-0} \
+    --master_addr=${MASTER_ADDR:-127.0.0.1} \
+    --master_port=${MASTER_PORT:-29500} \
+    openrlhf/cli/train_sft.py \
+        --pretrain aistudio://10812773/Qwen3-30B-A3B-gemm \
+        --dataset /path/to/data/RL/process_data/final_data/train_sft_v6.jsonl \
+        --input_key input \
+        --output_key label \
+        --save_path /path/to/data/RL/exp/sft \
+        --ckpt_path /path/to/data/RL/exp/sft/models \
+        --learning_rate 1e-5 \
+        --train_batch_size 128 \
+        --micro_train_batch_size 2 \
+        --max_epochs 3 \
+        --max_len 20480 \
+        --max_samples 10000000000 \
+        --adam_offload \
+        --apply_chat_template \
+        --save_steps 50 \
+        --logging_steps 1 \
+        --eval_steps 50 \
+        --zero_stage 3 \
+        --save_hf_ckpt \
+        --bf16 \
+        --flash_attn \
+        --gradient_checkpointing \
+        --use_tensorboard ./logs/tfevent \
+        --packing_samples \

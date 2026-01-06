@@ -1,0 +1,2 @@
+# ossutil64 cp -r /mnt/llada/zhaoda.hj/501171/projects/rgrm/codes/rgrm_reward.py oss://antsys-gpu-shenzhen-code/xiaoqi.lh/code/rgrm_reward.py
+[Error] 2025/09/18 11:29:26 upload /mnt/llada/zhaoda.hj/501171/projects/rgrm/codes/rgrm_reward.py to oss://antsys-gpu-shenzhen-code/xiaoqi.lh/code/rgrm_reward.py error, info: Put "http://antsys-gpu-shenzhen-code.oss-ap-southeast-1.aliyuncs.com/xiaoqi.lh%2Fcode%2Frgrm_reward.py": dial tcp 47.79.49.198:80: connect: network is unreachable, File=/mnt/llada/zhaoda.hj/501171/projects/rgrm/codes/rgrm_reward.py
