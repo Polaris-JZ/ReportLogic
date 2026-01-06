@@ -81,7 +81,7 @@ Your task: Given the question QUERY and two answer texts (A and B), produce a **
 This evaluation draws on classical logic and argumentation analysis theory and divides textual logic into three layers:
 1. **Macro level**: Examine the overall argumentative direction and thematic focus; determine whether the answer aligns with the task and maintains global coherence.
 2. **Structural level**: Assess the completeness of the reasoning chain, including claims, evidence, warrants, qualifiers, and internal consistency.
-3. **Expositional level**: Using information-flow theory (Given → New), judge whether the progression from familiar to new information is natural, smooth, and easy to follow.
+3. **Expositional level**: Using information-flow theory (Given -> New), judge whether the progression from familiar to new information is natural, smooth, and easy to follow.
 
 ---
 
@@ -92,7 +92,7 @@ This evaluation draws on classical logic and argumentation analysis theory and d
     - **Question focus**: Which side more clearly addresses the task up front or in the conclusion, states a central stance, and keeps the discussion on-topic?
 
 2. **Global coherence**  
-    - **Definition**: Evaluate whether the overall structure is logical from start to finish and follows an order appropriate for QUERY (e.g., background → issue → analysis → conclusion for analytical tasks, or comparison → evaluation → conclusion for comparison tasks). Focus on whether the essay sustains a stable argumentative arc.  
+    - **Definition**: Evaluate whether the overall structure is logical from start to finish and follows an order appropriate for QUERY (e.g., background -> issue -> analysis -> conclusion for analytical tasks, or comparison -> evaluation -> conclusion for comparison tasks). Focus on whether the essay sustains a stable argumentative arc.  
     - **Question focus**: Which side has a more organized global structure, follows a task-appropriate development sequence, and lands a conclusion that ties back to the body?
 
 3. **Local coherence**  
@@ -167,7 +167,7 @@ This evaluation draws on classical logic and argumentation analysis theory and d
 - If the answers contain multiple claims, choose the most central or frequently emphasized claim as the focal point of the question.
 - For dimension 5 (**Warrants & causal reasoning**) specifically:  
   - The `question` must identify the exact reasoning chain or causal direction discussed by A/B, rather than asking generically whether the logic is sound.  
-  - Do not express causal chains using symbols or arrows (such as "X→Y→Z"); rewrite them in natural language ("X leads to Y, which in turn affects Z").  
+    - Do not express causal chains using symbols or arrows (such as "X->Y->Z"); rewrite them in natural language ("X leads to Y, which in turn affects Z").  
   - The question must include: 1) the causal object (the claim being explained), 2) the causal path (why or how it holds), and 3) the comparison focus (which side gives a clearer account).  
   - Example:  
      - Weak: "Which side better explains why the indicators support accurate evaluation?" (too abstract)  
