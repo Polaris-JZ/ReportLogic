@@ -3,15 +3,11 @@ import torch
 import json
 from itertools import islice, zip_longest
 from transformers import AutoTokenizer
-from aistudio_checkpoint.aistudio_base_checkpointer import lazy_load_checkpoint
 import re
 from openrlhf.utils.utils import recover_original_order, distributed_order
 import os
 
-if os.path.exists("/path/to/llm_pretrain/model_hub/Qwen3-30B-A3B"):
-    path = "/path/to/llm_pretrain/model_hub/Qwen3-30B-A3B"
-else:
-    path = lazy_load_checkpoint("aistudio://10172182/Qwen3-30B-A3B")
+path = os.environ.get("REWARD_TOKENIZER_PATH", "/path/to/checkpoint/reward-tokenizer")
 tokenizer = AutoTokenizer.from_pretrained(path)
 
 prompt_template = """你是一位熟练的评分小能手。你应该根据给定的用户问题生成全面丰富细致的评判标准，并对智能体回复内容进行评估。

@@ -11,7 +11,6 @@ from ray.util.scheduling_strategies import PlacementGroupSchedulingStrategy
 from openrlhf.models import Actor, get_llm_for_sequence_regression
 from openrlhf.trainer.ray.utils import ray_noset_visible_devices
 from openrlhf.utils.deepspeed import DeepspeedStrategy
-from aistudio_checkpoint.aistudio_base_checkpointer import lazy_load_checkpoint
 
 
 class DistributedTorchRayActor:
@@ -68,8 +67,6 @@ class BasePPORole(DistributedTorchRayActor):
 class ReferenceModelRayActor(BasePPORole):
     def init_model_from_pretrained(self, strategy: DeepspeedStrategy, pretrain):
         self._setup_distributed(strategy)
-        if isinstance(pretrain, str) and pretrain.startswith("aistudio"):
-            pretrain = lazy_load_checkpoint(resuming_path=pretrain)
         model = Actor(
             pretrain,
             use_flash_attention_2=strategy.args.flash_attn,
@@ -133,9 +130,6 @@ class ReferenceModelRayActor(BasePPORole):
 class RewardModelRayActor(BasePPORole):
     def init_model_from_pretrained(self, strategy: DeepspeedStrategy, pretrain):
         self._setup_distributed(strategy)
-        if isinstance(pretrain, str) and pretrain.startswith("aistudio"):
-            pretrain = lazy_load_checkpoint(resuming_path=pretrain)
-                
         model = get_llm_for_sequence_regression(
             pretrain,
             "reward",

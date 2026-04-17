@@ -74,17 +74,12 @@ def get_llm_for_sequence_regression(
     value_head_prefix = getattr(config, "value_head_prefix", value_head_prefix)
     logger.info(f"set value_head_prefix to `{value_head_prefix}`")
     
-    if 'configuration_bailing_moe' in str(type(config)):
-        from transformers import AutoModelForSequenceClassification
-        cls_class = AutoModelForSequenceClassification
-        assert model_type == "reward", "目前还不支持基于moe-lite的ppo算法, critic model不能获取"
+    base_class = AutoModel._model_mapping[type(config)]
+    base_pretrained_class = base_class.__base__
+    if model_type == "reward":
+        cls_class = _get_reward_model(base_pretrained_class, base_class, value_head_prefix, packing_samples)
     else:
-        base_class = AutoModel._model_mapping[type(config)]
-        base_pretrained_class = base_class.__base__
-        if model_type == "reward":
-            cls_class = _get_reward_model(base_pretrained_class, base_class, value_head_prefix, packing_samples)
-        else:
-            cls_class = _get_critic_model(base_pretrained_class, base_class, value_head_prefix, packing_samples)
+        cls_class = _get_critic_model(base_pretrained_class, base_class, value_head_prefix, packing_samples)
 
     # Note: dschf is defined in function scope to avoid global effects
     # https://huggingface.co/docs/transformers/main_classes/deepspeed#nontrainer-deepspeed-integration
@@ -171,10 +166,7 @@ def _get_reward_model(base_pretrained_model, base_llm_model, value_head_prefix="
             setattr(self, self.base_model_prefix, base_llm_model(config))
 
             self.value_head_prefix = value_head_prefix
-            if "bailing" in str(type(config)):
-                setattr(self, value_head_prefix, nn.Sequential(nn.Linear(config.hidden_size, config.hidden_size), nn.ReLU(), nn.Linear(config.hidden_size, 1)))
-            else:
-                setattr(self, value_head_prefix, nn.Linear(config.hidden_size, 1, bias=False))
+            setattr(self, value_head_prefix, nn.Linear(config.hidden_size, 1, bias=False))
 
             self.packing_samples = packing_samples
 

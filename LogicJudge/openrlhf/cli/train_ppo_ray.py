@@ -295,8 +295,6 @@ if __name__ == "__main__":
     parser.add_argument("--save_steps", type=int, default=-1)
     parser.add_argument("--logging_steps", type=int, default=1)
     parser.add_argument("--ckpt_path", type=str, default="./ckpt/checkpoints_ppo_ray")
-    parser.add_argument("--disable_hf_on_aisckpt", action="store_true", default=False)
-    parser.add_argument("--ais_restart_path", type=str, default="", help="重启路径，在aisckpt环境下可以设置，在非aisckpt环境下不需要设置")
     parser.add_argument("--save_hf_ckpt", action="store_true", default=False)
     parser.add_argument("--disable_ds_ckpt", action="store_true", default=False)
     parser.add_argument("--max_ckpt_num", type=int, default=3)

@@ -243,14 +243,9 @@ class SFTTrainer(ABC):
                     self.model.model, args.ckpt_path, tag, args.max_ckpt_num, args.max_ckpt_mem, client_states
                 )
             if self.save_hf_ckpt:
-                # only save the model to aistudio pcache
-                memo = f"{self.args.save_path.split('/')[-1]}-step-{global_step}-ckpt"
-                from aistudio_checkpoint.aistudio_mnt_checkpointer import AistudioMntCheckpointer
-                ais_mnt_ckpter = AistudioMntCheckpointer(is_merge_metadata=True)
-                save_path = ais_mnt_ckpter.get_save_dir(step=global_step)
+                save_path = os.path.join(args.ckpt_path, f"hf-step-{global_step}")
                 self.strategy.print(f"{self.model.model.config=}")
                 self.strategy.save_model(self.model, self.tokenizer, save_path)
-                ais_mnt_ckpter.commit(memo=memo)
 
             torch.distributed.barrier()
             torch.cuda.synchronize()

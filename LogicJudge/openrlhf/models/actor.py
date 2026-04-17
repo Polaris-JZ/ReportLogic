@@ -71,9 +71,6 @@ class Actor(nn.Module):
             else:
                 nf4_config = None
 
-            if pretrain_or_model.startswith("aistudio"):
-                from aistudio_checkpoint.aistudio_base_checkpointer import lazy_load_checkpoint
-                pretrain_or_model = lazy_load_checkpoint(pretrain_or_model)
             self.model = AutoModelForCausalLM.from_pretrained(
                 pretrain_or_model,
                 trust_remote_code=True,

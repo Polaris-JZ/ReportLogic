@@ -223,7 +223,13 @@ class Qwen3MoeSparseMoeBlock(nn.Module):
                 [Qwen3MoeMLP(config, intermediate_size=config.moe_intermediate_size) for _ in range(self.num_experts)]
             )
         else:
-            from atorch.modules.moe.grouped_gemm_moe import Grouped_GEMM_MoE
+            try:
+                from grouped_gemm_moe import Grouped_GEMM_MoE
+            except ImportError as e:
+                raise ImportError(
+                    "use_grouped_gemm_moe=True requires a local Grouped_GEMM_MoE implementation. "
+                    "Provide one importable as `grouped_gemm_moe.Grouped_GEMM_MoE`."
+                ) from e
             self.experts = Grouped_GEMM_MoE(
                 hidden_size=config.hidden_size,
                 expert_intermediate_size=config.moe_intermediate_size,

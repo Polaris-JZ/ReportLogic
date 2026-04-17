@@ -206,13 +206,6 @@ class DeepspeedStrategy(ABC):
         is_actor = isinstance(model, Actor)
         ds_config = self.get_ds_train_config(is_actor)
 
-        for m in model.modules():
-            # https://github.com/microsoft/DeepSpeed/pull/4966
-            if "BailingMoeSparseMoeBlock" in m.__class__.__name__:
-                deepspeed.utils.set_z3_leaf_modules(model, [m.__class__])
-                print(f"Setting zero3 leaf for model on class with name: {m.__class__.__name__}")
-                break
-        
         engine, optim, _, scheduler = deepspeed.initialize(
             model=model.model if is_actor else model,
             optimizer=optim,
@@ -256,13 +249,6 @@ class DeepspeedStrategy(ABC):
         is_actor = isinstance(model, Actor)
         ds_config = self.get_ds_eval_config(offload=getattr(model, "_offload", False))
         
-        for m in model.modules():
-            # https://github.com/microsoft/DeepSpeed/pull/4966
-            if "BailingMoeSparseMoeBlock" in m.__class__.__name__:
-                deepspeed.utils.set_z3_leaf_modules(model, [m.__class__])
-                print(f"Setting zero3 leaf for model on class with name: {m.__class__.__name__}")
-                break
-
         engine, *_ = deepspeed.initialize(
             model=model.model if is_actor else model,
             args={"local_rank": self.args.local_rank},

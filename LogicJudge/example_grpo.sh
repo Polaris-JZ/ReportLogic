@@ -7,7 +7,7 @@ python3 -m openrlhf.cli.train_ppo_ray \
     --vllm_tensor_parallel_size 4 \
     --colocate_all_models \
     --vllm_gpu_memory_utilization 0.7 \
-    --pretrain aistudio://14670081/sft_lasteval_5epoch_v6-step-464-ckpt \
+    --pretrain /path/to/checkpoint/sft-model \
     --save_path /path/to/data/RL/exp/rl_v6_2ep \
     --micro_train_batch_size 1 \
     --train_batch_size 2048 \
@@ -47,7 +47,7 @@ python3 -m openrlhf.cli.train_ppo_ray \
     --apply_chat_template \
     --dynamic_max_new_tokens_percents 0.95 \
     --save_hf_ckpt \
-    --ckpt_path aistudio://14291405/sft-step-400-ckpt \
+    --ckpt_path /path/to/checkpoint/sft-init \
     --remote_rm_url /path/to/data/RL/OpenRLHF/reward/rgrm_reward.py \
     --discard_over_long_examples \
     --ref_update_interval -1 \

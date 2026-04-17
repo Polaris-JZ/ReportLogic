@@ -2,29 +2,8 @@ import torch
 from openrlhf.cli.ifeval_eval import get_ifeval_reward
 from openrlhf.cli.serve_rm_math_boxed import get_correct_reward as get_boxed_reward
 import json
-import bailing_verifier.verifiers
-from bailing_verifier.registry import VERIFIER_FACTORY
-from bailing_verifier.verifiers.code.sandbox.ant_sandbox import ant_sandbox_verifier
 from concurrent.futures import ProcessPoolExecutor
 import multiprocessing
-
-
-
-def get_verifier_reward(query, prompt, label):
-    data_dict = json.loads(label)
-    verification_func = VERIFIER_FACTORY.get(data_dict['verifier'])
-    model_prediction = query.replace(prompt, "")
-    testcases = data_dict["gold"]
-
-    if "template_answer" in data_dict:
-        verify_result = verification_func(model_prediction, testcases, template_answer=data_dict["template_answer"])
-    else:
-        verify_result = verification_func(model_prediction, testcases)
-    flag = verify_result['pass']
-    if flag:
-        return 1.0
-    else:
-        return 0.0
 
 
 def get_reward(item):
@@ -41,19 +20,14 @@ def get_reward(item):
             return get_boxed_reward(query, prompt, label)  # math verify reward
 
         elif 'verifier' in label_json.keys() and 'symbolic-match-verifier' in label_json['verifier']:
-            return get_boxed_reward(query, prompt, label_json['gold']) 
+            return get_boxed_reward(query, prompt, label_json['gold'])
 
         # IFEval
         elif 'key' in label and 'instruction_id_list' in label and 'prompt' in label and 'kwargs' in label:
-            return get_ifeval_reward(query, prompt, label)  # 确定为IFEval的evaluation结果
-        
-        # bailing_verifier
-        elif 'verifier' in label_json.keys():
-            return get_verifier_reward(query, prompt, label)
+            return get_ifeval_reward(query, prompt, label)
 
-        # math 兜底
         else:
-            raise NotImplementedError("尚未实现的rule-based reward")
+            raise NotImplementedError("No rule-based reward implemented for this label schema.")
     except Exception as e:
         print(f"Error={e}")
         return 0.0

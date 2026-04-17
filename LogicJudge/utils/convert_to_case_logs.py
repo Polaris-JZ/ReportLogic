@@ -89,16 +89,17 @@ if __name__ == '__main__':
     main(args)
 
 '''
+Example usage:
+
 python utils/convert_to_case_logs.py \
-    --exp_dir /path/to/llm_pretrain/exp/397432/OpenReasoner/orz_grpo_Ling-sft-ep3-fix_rotate-v2-lr1e-6_kl1e-3_bs128_sample64_sgtest \
+    --exp_dir /path/to/exp/my_run \
     --output_type train \
     --step 381 \
-    --model_name Ling-sft-ep3-fix_rotate-v2 \
+    --model_name my-model-v1
 
 python utils/convert_to_case_logs.py \
-    --exp_dir /path/to/llm_pretrain/exp/397432/OpenReasoner/orz_grpo_Ling-sft-ep3-fix_rotate-v2-lr1e-6_kl1e-3_bs128_sample64_sgtest \
+    --exp_dir /path/to/exp/my_run \
     --output_type eval \
     --step 50 \
-    --model_name Ling-sft-ep3-fix_rotate-v2 \
-
+    --model_name my-model-v1
 '''

@@ -5,38 +5,20 @@ import json
 from glob import glob
 from transformers import AutoTokenizer
 from vllm import LLM, SamplingParams
-from aistudio_checkpoint.aistudio_base_checkpointer import lazy_load_checkpoint
 
 """
-读取 input_file_path 中的 JSONL 数据，提取指定 key 的内容作为问题，使用 model_path 下的模型进行推理, tp是张量并行度(H200上设置到1,A100/H800上设置到2),
-并将结果保存到 output_file_path 中 (内容在input_file的基础上,加上了"judge_results"这个key,它对应的value是list[dict],如下面例子所示)
-{
-    input_file...
-    "judge_results": [
-        {
-            "response": xxx,
-            "response_length": 123,
-            "judge_model": "aistudio://10452473/Qwen3-30B"
-        },
-        {
-            "response": yyy,
-            "response_length": 456,
-            "judge_model": "aistudio://10452473/Qwen3-30B"
-        },
-        ...
-    ]
-}
-
+Read JSONL data from input_file_path, extract the content of the specified key as the question,
+run inference with the model at model_path (tp = tensor parallel size; 1 on H200, 2 on A100/H800),
+and save results to output_file_path. The output extends each input record with a "judge_results"
+list of dicts, each containing {"response", "response_length", "judge_model"}.
 """
 
-input_files = "/personal/projects/rgrm/data/testset/testset_w_checklist/testset_flasheval_wcl.jsonl,/personal/projects/rgrm/data/testset/testset_w_checklist/testset_human_wcl.jsonl,/personal/projects/rgrm/data/testset/testset_w_checklist/testset_llm_wcl.jsonl".split(',')
-
-input_files = glob('/personal/projects/rgrm/data/testset/testset_w_checklist/benchmarks/*/*.jsonl')
-output_dir = '/personal/projects/rgrm/exp/sft_wocl_ckpts/eval'
+input_files = glob('/path/to/data/testset/benchmarks/*/*.jsonl')
+output_dir = '/path/to/exp/sft_wocl_ckpts/eval'
 input_key = "input"
 
-model_path = "aistudio://12542025/sft_wocl_step_494_hf-step494"
-tp = 1  # H200上tp=1, H800/A100上tp=2比较快
+model_path = "/path/to/checkpoint/sft_wocl"
+tp = 1  # tp=1 on H200, tp=2 on H800/A100 is usually faster
 
 
 ray.init()
@@ -67,9 +49,7 @@ def get_reward(output, label):
 
 
 def get_local_path(model_path):
-    if not model_path.startswith("aistudio:"):
-        return model_path
-    return lazy_load_checkpoint(resuming_path=model_path)
+    return model_path
 
 
 def read_jsonl(data_path):

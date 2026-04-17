@@ -5,7 +5,6 @@ from datasets import interleave_datasets, load_dataset, load_from_disk
 from transformers import AutoTokenizer
 import torch
 import ray
-from aistudio_checkpoint.aistudio_base_checkpointer import lazy_load_checkpoint
 
 
 DEFAULT_PAD_TOKEN = "[PAD]"
@@ -15,8 +14,6 @@ DEFAULT_UNK_TOKEN = "<unk>"
 
 
 def get_tokenizer(pretrain, model=None, padding_side="left", strategy=None, use_fast=True):
-    if pretrain.startswith("aistudio"):
-        pretrain = lazy_load_checkpoint(pretrain)
     tokenizer = AutoTokenizer.from_pretrained(pretrain, trust_remote_code=True, use_fast=use_fast)
     tokenizer.padding_side = padding_side
     # NOTE: When enable vLLM, do not resize_token_embeddings, or the vocab size will mismatch with vLLM.
@@ -148,12 +145,7 @@ def print_gpu_memory_details():
 
 
 def get_ckpt_path(args, model_type):
-    from aistudio_checkpoint.aistudio_base_checkpointer import lazy_load_checkpoint
-    if args.ais_restart_path != "":
-        ais_restart_path = lazy_load_checkpoint(args.ais_restart_path)
-        return os.path.join(ais_restart_path, model_type)
-    else:
-        return os.path.join(args.ckpt_path, model_type)
+    return os.path.join(args.ckpt_path, model_type)
 
     
 # 通过路径动态寻找文件加载自定义的奖励函数

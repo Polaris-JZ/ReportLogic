@@ -1,12 +1,11 @@
+import os
 import re
 import torch
 import json
 from itertools import islice, zip_longest
 from transformers import AutoTokenizer
-from aistudio_checkpoint.aistudio_base_checkpointer import lazy_load_checkpoint
-import re
 
-path = lazy_load_checkpoint("aistudio://10172182/Qwen3-30B-A3B")
+path = os.environ.get("REWARD_TOKENIZER_PATH", "/path/to/checkpoint/reward-tokenizer")
 tokenizer = AutoTokenizer.from_pretrained(path)
 
 prompt_template = """你是一位熟练的评分小能手。你应该根据给定的用户问题生成全面丰富细致的评判标准，并对智能体回复内容进行评估。
@@ -109,12 +108,14 @@ def vllm_reward_post_process_func(vllm_reward_responses, queries, prompts, label
  
 
 if __name__ == "__main__":
-    data = [json.loads(line) for line in open("/path/to/llm_pretrain/dataset/lite_rl_data/general_data/generative_model_data/dpo_subjective_9w_generative_dsv3-as-gt.jsonl").readlines()[: 100]]
-    bailing_tokenizer = AutoTokenizer.from_pretrained("/mnt/llada/zhaoda.hj/397432/models/lite_longshort_merge_27447_hf", trust_remote_code=True)
+    sample_path = os.environ.get("SAMPLE_DATA_PATH", "/path/to/data/sample.jsonl")
+    tokenizer_path = os.environ.get("CHAT_TOKENIZER_PATH", "/path/to/checkpoint/chat-tokenizer")
+    data = [json.loads(line) for line in open(sample_path).readlines()[: 100]]
+    chat_tokenizer = AutoTokenizer.from_pretrained(tokenizer_path, trust_remote_code=True)
     queries, prompts, labels = [], [], []
     for example in data:
         label_json = json.loads(example['label'])
-        prompt = bailing_tokenizer.apply_chat_template(
+        prompt = chat_tokenizer.apply_chat_template(
             [
                 {'role': 'user', 'content': example['input']}
             ],

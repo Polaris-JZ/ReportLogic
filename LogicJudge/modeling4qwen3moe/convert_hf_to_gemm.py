@@ -6,7 +6,6 @@ from tqdm import tqdm
 import json
 import shutil
 import os
-from aistudio_checkpoint.aistudio_base_checkpointer import lazy_load_checkpoint
 
 
 def write_model(args):
@@ -86,36 +85,23 @@ if __name__ == '__main__':
     )
     parser.add_argument(
         "--input_dir",
-        help="Location of Bailing HF Checkpoint.",
+        required=True,
+        help="Location of the HF checkpoint to convert.",
     )
     parser.add_argument(
         "--output_dir",
+        required=True,
         help="Location of Output dir.",
     )
     parser.add_argument(
         "--memo",
         default="",
-        help="备注",
+        help="Optional note.",
     )
     args = parser.parse_args()
 
-    if args.input_dir.startswith("aistudio"):
-        args.input_dir = lazy_load_checkpoint(args.input_dir)
-
-    ais_mnt_ckpter = None
-    if not args.output_dir:
-        from aistudio_checkpoint.aistudio_mnt_checkpointer import AistudioMntCheckpointer
-        ais_mnt_ckpter = AistudioMntCheckpointer(is_merge_metadata=True)
-        args.output_dir = ais_mnt_ckpter.get_save_dir(step=0)
-
-    if ais_mnt_ckpter is None:
-        os.makedirs(args.output_dir, exist_ok=True)
-        
     os.makedirs(args.output_dir, exist_ok=True)
     write_model(args)
     add_config(args)
     copy_files(args)
-
-    if ais_mnt_ckpter is not None:
-        ais_mnt_ckpter.commit(memo=args.memo)
 

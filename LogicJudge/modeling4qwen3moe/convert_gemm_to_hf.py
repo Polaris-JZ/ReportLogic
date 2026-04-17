@@ -6,11 +6,10 @@ from tqdm import tqdm
 import json
 import shutil
 import os
-from aistudio_checkpoint.aistudio_base_checkpointer import lazy_load_checkpoint
 
 
 def write_model(args):
-    # 使用load_state_dict_from_file加载可以避免安装Gemm环境
+    # Use load_state_dict_from_file to avoid requiring the Gemm environment
     # model = AutoModelForCausalLM.from_pretrained(args.input_dir, trust_remote_code=True, torch_dtype = torch.bfloat16)
     config = AutoConfig.from_pretrained(args.input_dir, trust_remote_code=True)
     files = os.listdir(args.input_dir)
@@ -37,7 +36,6 @@ def write_model(args):
                 new_state_dict[down_proj_name] = down_proj_weight
         else:
           new_state_dict[key] = old_state_dict[key].cpu()
-    # 保存state_dict
     save_torch_state_dict(new_state_dict, args.output_dir, max_shard_size="10GB")
     print(f"Model saved to {args.output_dir}")
 
@@ -76,42 +74,22 @@ if __name__ == '__main__':
     )
     parser.add_argument(
         "--input_dir",
-        help="Location of Bailing HF Checkpoint.",
+        required=True,
+        help="Location of the Grouped-GEMM checkpoint to convert.",
     )
     parser.add_argument(
         "--output_dir",
+        required=True,
         help="Location of Output dir.",
     )
     parser.add_argument(
         "--memo",
         default="",
-        help="备注",
+        help="Optional note appended to the run identifier.",
     )
     args = parser.parse_args()
-    import re
-    match = re.search(r'step-(\d+)', args.input_dir)
-    if match:
-        steps = match.group(1)
-    else:
-        steps = 0
-    memo = args.memo + f"-step{steps}"
 
-    if args.input_dir.startswith("aistudio"):
-        args.input_dir = lazy_load_checkpoint(args.input_dir)
-
-    ais_mnt_ckpter = None
-    if not args.output_dir:
-        from aistudio_checkpoint.aistudio_mnt_checkpointer import AistudioMntCheckpointer
-        ais_mnt_ckpter = AistudioMntCheckpointer(is_merge_metadata=True)
-        args.output_dir = ais_mnt_ckpter.get_save_dir(step=int(steps))
-
-    if ais_mnt_ckpter is None:
-        os.makedirs(args.output_dir, exist_ok=True)
-        
+    os.makedirs(args.output_dir, exist_ok=True)
     write_model(args)
     add_config(args)
     copy_files(args)
-
-    if ais_mnt_ckpter is not None:
-        ais_mnt_ckpter.commit(memo=memo)
-

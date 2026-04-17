@@ -5,7 +5,7 @@ torchrun --nnodes=${WORLD_SIZE:-1} \
     --master_addr=${MASTER_ADDR:-127.0.0.1} \
     --master_port=${MASTER_PORT:-29500} \
     openrlhf/cli/train_sft.py \
-        --pretrain aistudio://10812773/Qwen3-30B-A3B-gemm \
+        --pretrain /path/to/checkpoint/Qwen3-30B-A3B-gemm \
         --dataset /path/to/data/RL/process_data/final_data/train_sft_v6.jsonl \
         --input_key input \
         --output_key label \

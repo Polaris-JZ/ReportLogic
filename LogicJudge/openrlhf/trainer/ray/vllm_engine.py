@@ -7,7 +7,6 @@ from ray.util.scheduling_strategies import PlacementGroupSchedulingStrategy
 from vllm import LLM
 
 from openrlhf.utils.logging_utils import init_logger
-from aistudio_checkpoint.aistudio_base_checkpointer import load_checkpoint
 
 logger = init_logger(__name__)
 
@@ -52,12 +51,6 @@ class LLMRayActor:
         self.actor_counter = 0
         self.requests = {}
         self.responses = {}
-
-        # 校验并修改 pretrain 参数
-        if "model" in kwargs:
-            pretrain = kwargs["model"]
-            if isinstance(pretrain, str) and pretrain.startswith("aistudio"):
-                kwargs["model"] = load_checkpoint(resuming_path=kwargs["model"])
 
         self.llm = LLM(*args, **kwargs)
         self.is_wake_up = True

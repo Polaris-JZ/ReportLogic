@@ -17,7 +17,6 @@ from openrlhf.trainer import PPOTrainer
 from openrlhf.trainer.ppo_utils import Experience
 from openrlhf.utils import get_tokenizer, get_ckpt_path
 from openrlhf.utils.deepspeed import DeepspeedStrategy
-from aistudio_checkpoint.aistudio_base_checkpointer import lazy_load_checkpoint
 
 from .launcher import BasePPORole
 from abc import ABC
@@ -79,10 +78,6 @@ class CriticPPOTrainer(ABC):
 @ray.remote(num_gpus=1)
 class CriticModelRayActor(BasePPORole):
     def init_model_from_pretrained(self, strategy: DeepspeedStrategy, pretrain, max_steps):
-        if isinstance(pretrain, str) and pretrain.startswith("aistudio"):
-            pretrain = lazy_load_checkpoint(resuming_path=pretrain)
-              
-
         args = strategy.args
 
         self._setup_distributed(strategy)

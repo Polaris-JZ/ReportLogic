@@ -11,7 +11,6 @@ import ray
 from transformers import AutoTokenizer
 from vllm import LLM, SamplingParams
 
-from aistudio_checkpoint.aistudio_base_checkpointer import lazy_load_checkpoint
 import compute_metrics_ours as metrics_utils
 
 CHECKLIST_COUNT = 8
@@ -498,7 +497,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--model-path",
         required=True,
-        help="Local or aistudio path to the model checkpoint.",
+        help="Local path to the model checkpoint.",
     )
     parser.add_argument(
         "--tp",
@@ -568,9 +567,7 @@ def _expand_input_files(raw_patterns: str) -> list[str]:
 
 
 def get_local_path(model_path: str) -> str:
-    if not model_path.startswith("aistudio:"):
-        return model_path
-    return lazy_load_checkpoint(resuming_path=model_path)
+    return model_path
 
 
 def read_jsonl(data_path):
@@ -1090,198 +1087,11 @@ if __name__ == "__main__":
     main()
 
 
-
-#  v4-SFT
-'''
-python vllm_infer_swap.py \
-  --input-files /path/to/data/data/zhihu/GT/zhihu_gt.csv \
-  --output-dir /path/to/data/RL/evaluate/zhihu_new_mirror \
-  --model-path aistudio://14681891/sft_lasteval_5epoch_v4-step-134-ckpt_hf-step134 \
-  --tp 2 \
-  --input-key input \
-  --report-performance
-
-python vllm_infer_swap.py \
-  --input-files /path/to/data/data/deep_research/GT/deep_research_gt.csv \
-  --output-dir /path/to/data/RL/evaluate/deepresearch_new_mirror \
-  --model-path aistudio://14681891/sft_lasteval_5epoch_v4-step-134-ckpt_hf-step134 \
-  --tp 2 \
-  --input-key input \
-  --report-performance \
-  
-
-python vllm_infer_swap.py \
-  --input-files /path/to/data/data/zhihu/GT/zhihu_gt.csv \
-  --output-dir /path/to/data/RL/evaluate/zhihu_new_mirror \
-  --model-path aistudio://14682121/sft_lasteval_5epoch_v4-step-268-ckpt_hf-step268 \
-  --tp 2 \
-  --input-key input \
-  --report-performance
-
-python vllm_infer_swap.py \
-  --input-files /path/to/data/data/deep_research/GT/deep_research_gt.csv \
-  --output-dir /path/to/data/RL/evaluate/deepresearch_new_mirror \
-  --model-path aistudio://14682121/sft_lasteval_5epoch_v4-step-268-ckpt_hf-step268 \
-  --tp 2 \
-  --input-key input \
-  --report-performance \
-  
-'''
-
-
-#  v6-SFT
-'''
-python vllm_infer_swap.py \
-  --input-files /path/to/data/data/zhihu/GT/zhihu_gt.csv \
-  --output-dir /path/to/data/RL/evaluate/zhihu_new_mirror \
-  --model-path aistudio://14682492/sft_lasteval_5epoch_v6-step-696-ckpt_hf-step696 \
-  --tp 2 \
-  --input-key input \
-  --report-performance
-
-python vllm_infer_swap.py \
-  --input-files /path/to/data/data/deep_research/GT/deep_research_gt.csv \
-  --output-dir /path/to/data/RL/evaluate/deepresearch_new_mirror \
-  --model-path aistudio://14682492/sft_lasteval_5epoch_v6-step-696-ckpt_hf-step696 \
-  --tp 2 \
-  --input-key input \
-  --report-performance \
-  
-python vllm_infer_swap.py \
-  --input-files /path/to/data/data/zhihu/GT/zhihu_gt.csv \
-  --output-dir /path/to/data/RL/evaluate/zhihu_new_mirror \
-  --model-path aistudio://14682822/sft_lasteval_5epoch_v6-step-928-ckpt_hf-step928 \
-  --tp 2 \
-  --input-key input \
-  --report-performance
-
-python vllm_infer_swap.py \
-  --input-files /path/to/data/data/deep_research/GT/deep_research_gt.csv \
-  --output-dir /path/to/data/RL/evaluate/deepresearch_new_mirror \
-  --model-path aistudio://14682822/sft_lasteval_5epoch_v6-step-928-ckpt_hf-step928 \
-  --tp 2 \
-  --input-key input \
-  --report-performance \
-
-python vllm_infer_swap.py \
-  --input-files /path/to/data/data/zhihu/GT/zhihu_gt.csv \
-  --output-dir /path/to/data/RL/evaluate/zhihu_new_mirror \
-  --model-path aistudio://14683387/sft_lasteval_5epoch_v6-step-1160-ckpt_hf-step1160 \
-  --tp 2 \
-  --input-key input \
-  --report-performance
-
-python vllm_infer_swap.py \
-  --input-files /path/to/data/data/deep_research/GT/deep_research_gt.csv \
-  --output-dir /path/to/data/RL/evaluate/deepresearch_new_mirror \
-  --model-path aistudio://14683387/sft_lasteval_5epoch_v6-step-1160-ckpt_hf-step1160 \
-  --tp 2 \
-  --input-key input \
-  --report-performance \
-
-python vllm_infer_swap.py \
-  --input-files /path/to/data/data/zhihu/GT/zhihu_gt.csv \
-  --output-dir /path/to/data/RL/evaluate/zhihu_new_mirror \
-  --model-path aistudio://14333845/Qwen3-30B-A3B-gemm_hf-step0 \
-  --tp 2 \
-  --input-key input \
-  --report-performance
-
-python vllm_infer_swap.py \
-  --input-files /path/to/data/data/deep_research/GT/deep_research_gt.csv \
-  --output-dir /path/to/data/RL/evaluate/deepresearch_new_mirror \
-  --model-path aistudio://10841644//pcache-mnt/rw/checkpoint/54124/416544/192862771/250731144848/1000/ \
-  --tp 2 \
-  --input-key input \
-  --report-performance
-
-
-python vllm_infer_swap.py \
-  --input-files /path/to/data/data/deep_research/GT/deep_research_gt.csv \
-  --output-dir /path/to/data/RL/evaluate/deepresearch_new_mirror \
-  --model-path aistudio://14333845/Qwen3-30B-A3B-gemm_hf-step0 \
-  --tp 2 \
-  --input-key input \
-  --report-performance
-
-python vllm_infer_swap.py \
-  --input-files /path/to/data/data/zhihu/GT/zhihu_gt.csv \
-  --output-dir /path/to/data/RL/evaluate/zhihu_new_mirror \
-  --model-path aistudio://14682989/sft_lasteval_5epoch_v6-step-464-ckpt_hf-step464 \
-  --tp 2 \
-  --input-key input \
-  --report-performance
-
-python vllm_infer_swap.py \
-  --input-files /path/to/data/data/deep_research/GT/deep_research_gt.csv \
-  --output-dir /path/to/data/RL/evaluate/deepresearch_new_mirror \
-  --model-path aistudio://14682989/sft_lasteval_5epoch_v6-step-464-ckpt_hf-step464 \
-  --tp 2 \
-  --input-key input \
-  --report-performance \
-
-python vllm_infer_swap.py \
-  --input-files /path/to/data/data/zhihu/GT/zhihu_gt.csv \
-  --output-dir /path/to/data/RL/evaluate/zhihu_new_mirror \
-  --model-path aistudio://14683230/sft_lasteval_5epoch_v6-step-232-ckpt_hf-step232 \
-  --tp 2 \
-  --input-key input \
-  --report-performance
-
-python vllm_infer_swap.py \
-  --input-files /path/to/data/data/deep_research/GT/deep_research_gt.csv \
-  --output-dir /path/to/data/RL/evaluate/deepresearch_new_mirror \
-  --model-path aistudio://14683230/sft_lasteval_5epoch_v6-step-232-ckpt_hf-step232 \
-  --tp 2 \
-  --input-key input \
-  --report-performance \
-'''
-
-#  v5-SFT
-'''
-python vllm_infer_swap.py \
-  --input-files /path/to/data/data/deep_research/GT/deep_research_gt.csv \
-  --output-dir /path/to/data/RL/evaluate/deepresearch_new_mirror \
-  --model-path aistudio://14683724/sft_lasteval_5epoch_v5-step-708-ckpt_hf-step708 \
-  --tp 2 \
-  --input-key input \
-  --report-performance
-
-
-'''
-
-#  v2-RL
-'''
-
-python vllm_infer_swap.py \
-  --input-files /path/to/data/data/zhihu/GT/zhihu_gt.csv \
-  --output-dir /path/to/data/RL/evaluate_backup/zhihu \
-  --model-path aistudio://14712798/sft_lasteval_3epoch_v2_wo_len-step-100-ckpt_hf-step100 \
-  --tp 2 \
-  --input-key input \
-  --report-performance
-
-python vllm_infer_swap.py \
-  --input-files /path/to/data/data/deep_research/GT/deep_research_gt.csv \
-  --output-dir /path/to/data/RL/evaluate_backup \
-  --model-path aistudio://14712798/sft_lasteval_3epoch_v2_wo_len-step-100-ckpt_hf-step100 \
-  --tp 2 \
-  --input-key input \
-  --report-performance
-
-python vllm_infer_swap.py \
-  --input-files /path/to/data/data/zhihu/GT/zhihu_gt.csv \
-  --output-dir /path/to/data/RL/evaluate_backup/zhihu \
-  --model-path aistudio://14712662/sft_lasteval_3epoch_v2-step-100-ckpt_hf-step100 \
-  --tp 2 \
-  --input-key input \
-  --report-performance
-
-python vllm_infer_swap.py \
-  --input-files /path/to/data/data/deep_research/GT/deep_research_gt.csv \
-  --output-dir /path/to/data/RL/evaluate_backup \
-  --model-path aistudio://14712662/sft_lasteval_3epoch_v2-step-100-ckpt_hf-step100 \
-  --tp 2 \
-  --input-key input \
-  --report-performance
-'''
+# Example usage:
+# python vllm_infer_swap.py \
+#   --input-files /path/to/inputs.csv \
+#   --output-dir /path/to/outputs \
+#   --model-path /path/to/checkpoint \
+#   --tp 2 \
+#   --input-key input \
+#   --report-performance

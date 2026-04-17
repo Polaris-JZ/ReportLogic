@@ -109,7 +109,7 @@ def call_api(content):
 
 if __name__ == '__main__':
     import json
-    data = json.loads(open("/path/to/llm_pretrain/exp/397432/OpenReasoner/orz_grpo_lite_Ling-Lite-base-OpenRLHF-Grouped_Gemm_lr1e-6_kl0_bs128_sample64_wo-think_sgtest_endboxed/rollout_output/Step1/Rank0.json").read())
+    data = json.loads(open("/path/to/exp/my_run/rollout_output/Step1/Rank0.json").read())
     queries, prompts, labels = [], [], []
     for item in data:
         queries.append(item['prompt'] + item['response'])

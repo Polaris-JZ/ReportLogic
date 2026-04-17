@@ -30,7 +30,9 @@ def strip_sequence(text, pad_token, eos_token):
 class RewardModelProxy:
     def __init__(self, args):
         # raw data dict of q2a
-        with open("/path/to/llm_pretrain/exp/466735/reasoning/r1_reasoning/datasets/oc_augmentation_gpt4_5k.jsonl", 'r') as f:
+        import os
+        dataset_path = os.environ.get("RM_DATASET_PATH", "/path/to/data/rm_q2a_dataset.jsonl")
+        with open(dataset_path, 'r') as f:
             all_data = [json.loads(line) for line in f.readlines()]
         self.raw_data_q2a = {}
         for data in all_data:

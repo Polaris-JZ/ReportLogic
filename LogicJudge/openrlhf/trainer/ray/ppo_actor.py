@@ -9,7 +9,6 @@ try:
     from deepspeed.runtime.zero.offload_config import OffloadStateTypeEnum
 except Exception as e:
     print(f"Import Warning: {e}")
-from aistudio_checkpoint.aistudio_base_checkpointer import lazy_load_checkpoint
 
 import deepspeed
 from torch.optim import Optimizer
@@ -479,9 +478,6 @@ class ActorModelRayActor(BasePPORole):
         args = strategy.args
         self.args = args
 
-        if isinstance(pretrain, str) and pretrain.startswith("aistudio"):
-            pretrain = lazy_load_checkpoint(resuming_path=pretrain)
-
         if getattr(args, "vllm_num_engines", 0) > 0:
             # To prevent hanging during NCCL synchronization of weights between DeepSpeed and vLLM.
             # see https://github.com/vllm-project/vllm/blob/c6b0a7d3ba03ca414be1174e9bd86a97191b7090/vllm/worker/worker_base.py#L445
@@ -626,14 +622,7 @@ class ActorModelRayActor(BasePPORole):
         )
     
     def save_checkpoint(self, tag, client_states):
-        ais_mnt_ckpter = None
         args = self.strategy.args
-        if args.ckpt_path.strip() == "aisckpt":
-            from aistudio_checkpoint.aistudio_mnt_checkpointer import AistudioMntCheckpointer
-            ais_mnt_ckpter = AistudioMntCheckpointer(is_merge_metadata=True)
-            steps = tag.replace("global_step", "")
-            args.ckpt_path = ais_mnt_ckpter.get_save_dir(step=int(steps))
-            self.strategy.print(f"Get checkpoint path:{args.ckpt_path}")
 
         # call remote critic
         if not self.args.disable_ds_ckpt:
@@ -647,23 +636,11 @@ class ActorModelRayActor(BasePPORole):
             )
 
         if self.args.save_hf_ckpt:
-            hf_ais_mnt_ckpter = None
-            save_path = args.ckpt_path
-            if (ais_mnt_ckpter is None) and (not args.disable_hf_on_aisckpt):
-                from aistudio_checkpoint.aistudio_mnt_checkpointer import AistudioMntCheckpointer
-                hf_ais_mnt_ckpter = AistudioMntCheckpointer(is_merge_metadata=True)
-                steps = tag.replace("global_step", "")
-                save_path = hf_ais_mnt_ckpter.get_save_dir(step=int(steps))
-                self.strategy.print("Get hf aisckpt path!")
-                
             self.strategy.save_model(
                 self.ema_model if args.enable_ema else self.actor,
                 self.tokenizer,
-                save_path,
+                args.ckpt_path,
             )
-            if hf_ais_mnt_ckpter is not None:
-                steps = tag.replace("global_step", "")
-                hf_ais_mnt_ckpter.commit(memo=f"""{args.save_path.split("/")[-1]}-step-{steps}-ckpt""")
 
         torch.distributed.barrier()
         torch.cuda.synchronize()
