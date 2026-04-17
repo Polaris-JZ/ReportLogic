@@ -1,9 +1,8 @@
-# ReportLogic & LogicJudge
+# ReportLogic & LogicJudge (ACL 2026 main)
 
 This repository provides the **data, code, and evaluation pipeline** for the paper:
 
 > **ReportLogic: Evaluating Logical Quality in Deep Research Reports**  
-> *(under review)*
 
 The repository contains:
 - the **ReportLogic benchmark**, a human-annotated dataset for evaluating logical quality in long-form analytical reports;
