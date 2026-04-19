@@ -12,6 +12,5 @@ The repository includes:
 - **LogicJudge** — a lightweight, rubric-aligned judge model trained to approximate expert logical judgments.
 - **Evaluation scripts** — reproducing the evaluation, ablation, and robustness analyses reported in the paper.
 
----
 
 > **Note:** The dataset is currently under internal review at company. We will release it as soon as the review is complete. Thanks for your patience!
