@@ -47,8 +47,8 @@ class _SilentTqdm:
 LOGGER = logging.getLogger(__name__)
 
 
-DEFAULT_API_KEY_ENV = "ANT_OPENAI_API_KEY_V2"
-DEFAULT_BASE_URL = os.environ.get("ANT_OPENAI_BASE_URL", "http://matrixllm-pool.global.alipay.com/v1/")
+DEFAULT_API_KEY_ENV = "OPENAI_API_KEY"
+DEFAULT_BASE_URL = os.environ.get("OPENAI_BASE_URL", "https://api.openai.com/v1/")
 DEFAULT_JUDGE_MODEL = "claude-sonnet-4-5-20250929"
 DEFAULT_REQUEST_TIMEOUT = 180
 TARGET_BIAS_FIELD_CANDIDATES = [

@@ -39,8 +39,8 @@ from typing import Any, Dict, Iterable, List, Optional, Sequence, Set, Tuple
 from openai import OpenAI
 from tqdm import tqdm
 
-ANT_OPENAI_API_KEY_V2 = os.environ.get("ANT_OPENAI_API_KEY_V2")
-BASE_URL = os.environ.get("ANT_OPENAI_BASE_URL", "https://matrixllm.alipay.com/v1/")
+OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
+BASE_URL = os.environ.get("OPENAI_BASE_URL", "https://api.openai.com/v1/")
 DEFAULT_JUDGE_MODEL = "claude-sonnet-4-5-20250929"
 DEFAULT_PREFERRED_MODEL_NAME = "preferred_answer"
 DEFAULT_ADVERSARIAL_MODEL_NAME = "adversarial_answer"
@@ -621,9 +621,9 @@ class JudgeClient:
         requests_per_second: float,
         request_timeout: Optional[int],
     ) -> None:
-        if not ANT_OPENAI_API_KEY_V2:
-            raise MissingAPIKeyError("ANT_OPENAI_API_KEY_V2 is not set")
-        self.client = OpenAI(api_key=ANT_OPENAI_API_KEY_V2, base_url=BASE_URL)
+        if not OPENAI_API_KEY:
+            raise MissingAPIKeyError("OPENAI_API_KEY is not set")
+        self.client = OpenAI(api_key=OPENAI_API_KEY, base_url=BASE_URL)
         self.model = model
         self.temperature = temperature
         self.max_tokens = max_tokens

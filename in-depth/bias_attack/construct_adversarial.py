@@ -35,8 +35,8 @@ DEFAULT_ATTACK_STRENGTHS = ("low", "medium", "high")
 DEFAULT_LANGUAGE_RETRY_LIMIT = 3
 ATTACK_STRENGTH_CHOICES = ("low", "medium", "high")
 
-ANT_OPENAI_API_KEY_V2 = os.environ.get("ANT_OPENAI_API_KEY_V2")
-BASE_URL = os.environ.get("ANT_OPENAI_BASE_URL", "http://matrixllm-pool.global.alipay.com/v1/")
+OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
+BASE_URL = os.environ.get("OPENAI_BASE_URL", "https://api.openai.com/v1/")
 
 WINNER_NORMALIZATION_MAP = {
     "assistant_1": "A",
@@ -196,7 +196,7 @@ JUDGE_BIAS_ATTACK_TEMPLATE = (
 
 
 class MissingAPIKeyError(RuntimeError):
-    """Raised when ANT_OPENAI_API_KEY_V2 is missing."""
+    """Raised when OPENAI_API_KEY is missing."""
 
 
 class FilteredResponseError(RuntimeError):
@@ -363,13 +363,13 @@ class AdversarialClient:
         requests_per_second: float,
         request_timeout: Optional[int],
     ) -> None:
-        if not ANT_OPENAI_API_KEY_V2:
-            raise MissingAPIKeyError("ANT_OPENAI_API_KEY_V2 is not set")
+        if not OPENAI_API_KEY:
+            raise MissingAPIKeyError("OPENAI_API_KEY is not set")
         try:
             from openai import OpenAI  # type: ignore
         except ImportError as exc:  # pragma: no cover
             raise ImportError("Please install openai to run adversarial generation") from exc
-        self.client = OpenAI(api_key=ANT_OPENAI_API_KEY_V2, base_url=BASE_URL)
+        self.client = OpenAI(api_key=OPENAI_API_KEY, base_url=BASE_URL)
         self.model = model
         self.temperature = temperature
         self.max_tokens = max_tokens
